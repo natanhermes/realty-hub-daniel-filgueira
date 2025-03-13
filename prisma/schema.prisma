@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id       String @id @default(uuid())
+  name     String
+  username String @unique
+  password String
+}
+
+model property {
+  id                   String          @id @default(uuid())
+  title                String
+  code                 String          @unique
+  propertyType         String // Casa, Apartamento, Comercial, Terreno
+  purpose              String // Venda, Aluguel, Temporada
+  salePrice            Float? // Preço de venda
+  rentalPrice          Float? // Preço de aluguel
+  dailyPrice           Float? // Preço de diária
+  condominiumFee       Float? // Taxa condominial
+  iptuValue            Float? // Valor do IPTU
+  acceptsFinancing     Boolean? // Aceita financiamento
+  acceptsExchange      Boolean? // Aceita troca
+  totalArea            Float? // Área total
+  builtArea            Float? // Área construída
+  numberOfBedrooms     Int? // Número de quartos
+  numberOfSuites       Int? // Número de suítes
+  numberOfBathrooms    Int? // Número de banheiros
+  numberOfParkingSpots Int? // Número de vagas de estacionamento
+  constructionYear     Int? // Ano de construção
+  floor                Int? // Número do andar
+  neighborhood         String? // Bairro
+  location             String? // URL da localização
+  description          String? // Descrição da propriedade
+  active               Boolean? // Propriedade está ativa
+  infrastructure       infrastructure?
+  image                image[]
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+}
+
+model image {
+  id         String   @id @default(uuid())
+  url        String
+  propertyId String
+  property   property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model infrastructure {
+  id                 String   @id @default(uuid())
+  hasBarbecue        Boolean // Tem churrasqueira
+  hasPool            Boolean // Tem piscina
+  hasPartyRoom       Boolean // Tem sala de festa
+  has24hPorter       Boolean // Tem porteiro 24h
+  hasGourmetArea     Boolean // Tem área gourmet
+  hasPlayground      Boolean // Tem playground
+  hasGym             Boolean // Tem academia
+  hasGarden          Boolean // Tem jardim
+  hasCourt           Boolean // Tem quadra
+  hasAirConditioning Boolean // Tem ar-condicionado
+  hasCustomFurniture Boolean // Tem móveis personalizados
+  hasBalcony         Boolean // Tem varanda
+  hasOffice          Boolean // Tem escritório
+  hasSolarEnergy     Boolean // Tem energia solar
+  hasElevator        Boolean // Tem elevador
+  propertyId         String   @unique
+  property           property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
