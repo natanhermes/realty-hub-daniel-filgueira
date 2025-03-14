@@ -2,14 +2,7 @@
 
 import Logo from '@/components/logo';
 import Link from 'next/link';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import { User } from 'lucide-react';
 import Form from 'next/form';
 import { logoutAction } from '../actions/logoutAction';
@@ -25,24 +18,19 @@ export default function Navbar({ userName }: { userName: string }) {
           </Link>
         </div>
         <nav className="flex items-center space-x-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="text-gray-700 hover:text-gray-900">
-                <User size={24} />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="mr-4">
-              <DropdownMenuLabel className="font-light uppercase text-xs">
-                {userName}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Form action={logoutAction}>
-                  <button>Logout</button>
-                </Form>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <button className="text-gray-700 hover:text-gray-900 flex items-end gap-2">
+            <User size={24} />
+
+            <span className="">
+              Olá, {userName}
+            </span>
+          </button>
+
+          <div className='w-[1px] h-10 bg-gray-600'></div>
+
+          <Form action={logoutAction}>
+            <button className='text-gray-700 hover:text-gray-900'>Sair</button>
+          </Form>
         </nav>
       </div>
     </header>
