@@ -286,7 +286,7 @@ export function PropertyFormClient({ form, isEditing = false }: PropertyFormClie
                     type="number"
                     placeholder="Ex: 2"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : 0)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -304,7 +304,7 @@ export function PropertyFormClient({ form, isEditing = false }: PropertyFormClie
                     type="number"
                     placeholder="Ex: 2"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : 0)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -322,7 +322,7 @@ export function PropertyFormClient({ form, isEditing = false }: PropertyFormClie
                     type="number"
                     placeholder="Ex: 2"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : 0)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -341,7 +341,7 @@ export function PropertyFormClient({ form, isEditing = false }: PropertyFormClie
                     type="number"
                     placeholder="Ex: 2"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : 0)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -361,7 +361,7 @@ export function PropertyFormClient({ form, isEditing = false }: PropertyFormClie
                     type="number"
                     placeholder="Ex: 2020"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : 0)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -380,7 +380,7 @@ export function PropertyFormClient({ form, isEditing = false }: PropertyFormClie
                     type="number"
                     placeholder="Ex: 2"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : 0)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -399,7 +399,7 @@ export function PropertyFormClient({ form, isEditing = false }: PropertyFormClie
                     type="number"
                     placeholder="Ex: 200"
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : 0)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -414,7 +414,7 @@ export function PropertyFormClient({ form, isEditing = false }: PropertyFormClie
               <FormItem>
                 <FormLabel>Área construída</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="Ex: 100" {...field} />
+                  <Input type="number" placeholder="Ex: 100" {...field} onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : 0)} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

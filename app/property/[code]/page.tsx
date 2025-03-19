@@ -14,6 +14,8 @@ import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { FloatingButton } from "@/components/floating-button";
 
+import { image } from "@prisma/client";
+
 const infrastructureLabels = {
   hasBarbecue: 'Churrasqueira',
   hasPool: 'Piscina',
@@ -40,8 +42,6 @@ export default function PropertyPage() {
     queryKey: ['property', code],
     queryFn: () => fetch(`/api/property/${code}`).then(res => res.json()),
   })
-
-  console.log(property)
 
   const goBack = () => {
     router.back()
@@ -76,7 +76,7 @@ export default function PropertyPage() {
 
           <Carousel className="w-full">
             <CarouselContent>
-              {property?.image.map((image) => (
+              {property?.image.map((image: image) => (
                 <CarouselItem key={image.id}>
                   <div className="relative rounded-lg bg-gray-100 flex items-center justify-center">
                     <div className="w-full h-[20rem] md:h-[30rem]">

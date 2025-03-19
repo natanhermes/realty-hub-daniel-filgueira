@@ -233,24 +233,26 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
               )}
             />
             <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={property?.active ? "destructive" : "default"}
-                className={`flex items-center gap-2 `}
-                onClick={() => handleChangeStatus(property?.id!)}
-              >
-                {property?.active ? (
-                  <>
-                    <Trash size={ICONS_SIZE} />
-                    Inativar
-                  </>
-                ) : (
-                  <>
-                    <CornerLeftUp size={ICONS_SIZE} />
-                    Ativar
-                  </>
-                )}
-              </Button>
+              {isEditing && (
+                <Button
+                  type="button"
+                  variant={property?.active ? "destructive" : "default"}
+                  className={`flex items-center gap-2 `}
+                  onClick={() => handleChangeStatus(property?.id!)}
+                >
+                  {property?.active ? (
+                    <>
+                      <Trash size={ICONS_SIZE} />
+                      Inativar
+                    </>
+                  ) : (
+                    <>
+                      <CornerLeftUp size={ICONS_SIZE} />
+                      Ativar
+                    </>
+                  )}
+                </Button>
+              )}
 
               <Button
                 type="button"

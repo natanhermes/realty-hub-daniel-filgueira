@@ -198,6 +198,7 @@ export default async function createOrUpdatePropertyAction(formData: FormData, p
         neighborhood: rawData.neighborhood,
         location: rawData.location,
         description: rawData.description,
+        active: true
       }
     }).catch((error) => {
       if (error.code === 'P2002') {

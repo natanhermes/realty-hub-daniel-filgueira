@@ -92,8 +92,8 @@ export function SearchClientLayout({ initialData }: { initialData?: PropertyResp
   }
 
   return (
-    <main className="relative min-h-screen max-w-screen-xl mx-auto">
-      <div className="relative h-[50vh]">
+    <main className="relative min-h-screen">
+      <div className="relative h-[60vh] flex items-end pb-4 justify-center">
         <div className="absolute inset-0 bg-black/40 z-10" />
         <div className="absolute inset-0">
           <Image
@@ -105,27 +105,8 @@ export function SearchClientLayout({ initialData }: { initialData?: PropertyResp
           />
         </div>
 
-        <div className="relative z-20  h-full">
-          <div className="container mx-auto h-full px-4 ">
-            <nav className="flex justify-between items-center lg:pl-12 py-4">
-              <Image src={logo} alt="Logotipo" className='w-[14rem] ' />
-
-              <div className="flex items-center gap-4">
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <MenuIcon size={24} className="cursor-pointer text-gray-300" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="mr-4">
-                    <DropdownMenuLabel>Serviços</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Anúncie seu imóvel</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </nav>
-
-            <FormFilterProperty form={form} />
-          </div>
+        <div className="relative z-10">
+          <FormFilterProperty form={form} />
         </div>
       </div>
 
@@ -133,16 +114,19 @@ export function SearchClientLayout({ initialData }: { initialData?: PropertyResp
         <div className='flex justify-center items-center h-[50vh] w-2/4 mx-auto'>
           <LucideLoader2 className='animate-spin text-gray-500' />
         </div>
-      ) : (
+      ) : properties.length > 0 ? (
         <>
-          <section className=' flex md:mx-10 lg:mx-auto flex-wrap items-center justify-center md:justify-between p-4 gap-4'>
+          <section className=' flex md:mx-10 lg:mx-auto flex-wrap items-center justify-center md:justify-evenly p-4 gap-4'>
             {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
           </section>
-
           <PaginationComponent totalPages={totalPages} currentPage={pagination.page} onPageChange={handlePageChange} />
         </>
+      ) : (
+        <div className='flex justify-center items-center h-[50vh] w-2/4 mx-auto'>
+          <p className='text-gray-500'>Nenhum imóvel encontrado para este filtro.</p>
+        </div>
       )}
 
       <section className="w-full mt-4 bg-gray-100">

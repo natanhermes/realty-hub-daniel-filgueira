@@ -15,7 +15,7 @@ const ICONS_SIZE = 14;
 export function PropertyCard({ property, isAdmin = false }: { property: Property, isAdmin?: boolean }) {
   return (
 
-    <Card className={cn("max-w-[24rem] md:max-w-[20rem] lg:max-w-[20rem] w-full flex flex-col cursor-pointer", {
+    <Card className={cn("max-w-[24rem] md:max-w-[20rem] lg:max-w-[20rem] w-full flex flex-col cursor-pointer hover:scale-105 hover:shadow-lg transition-all duration-300", {
       "opacity-50": !property.active
     })}>
       <CarouselImages imageUrls={property.image} />
@@ -28,7 +28,7 @@ export function PropertyCard({ property, isAdmin = false }: { property: Property
             alt="Whatsapp"
             width={40}
             height={40}
-            className='absolute -top-5 right-1'
+            className='absolute rounded-full -top-5 right-1 hover:scale-105 hover:shadow-lg transition-all duration-300'
           />
         )}
         <Link href={`${isAdmin ? `/dashboard/my-properties/${property.code}` : `/property/${property.code}`}`}>

@@ -11,6 +11,9 @@ const config: Config = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				bombalurina: ['var(--font-bombalurina)'],
+			},
 			colors: {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
@@ -42,6 +45,8 @@ const config: Config = {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))'
 				},
+				appBlue: 'hsl(var(--app-blue))',
+				textPrimary: 'hsl(var(--text-primary))',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

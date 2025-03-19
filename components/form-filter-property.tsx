@@ -7,7 +7,7 @@ import { PropertyFilters } from "@/types/Property";
 export function FormFilterProperty({ form }: { form: UseFormReturn<PropertyFilters> }) {
   return (
     <Form {...form}>
-      <div className="flex flex-col gap-2 mt-24 max-w-[40rem] mx-auto">
+      <div className="flex flex-col gap-2 max-w-[40rem] mx-auto ">
         <div className='flex gap-2 w-full'>
           <FormField
             control={form.control}

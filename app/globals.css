@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  background: url('./assets/background.svg');
+  /* background: url('./assets/background.svg'); */
   background-color: rgba(0, 0, 0, 0.05);
 }
 
@@ -34,6 +34,8 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --app-blue: #000066;
+    --text-primary: #000066;
   }
 
   .dark {
