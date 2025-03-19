@@ -4,11 +4,11 @@ import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { PropertyFilters } from "@/types/Property";
 
-export function FormFilterProperty({ form }: { form: UseFormReturn<PropertyFilters> }) {
+export function FormFilterProperty({ form, isDesktop = false }: { form: UseFormReturn<PropertyFilters>, isDesktop?: boolean }) {
   return (
     <Form {...form}>
       <div className="flex flex-col gap-2 max-w-[40rem] mx-auto ">
-        <div className='flex gap-2 w-full'>
+        <div className='flex gap-2 w-full md:flex-row flex-col'>
           <FormField
             control={form.control}
             name="query"
@@ -30,7 +30,7 @@ export function FormFilterProperty({ form }: { form: UseFormReturn<PropertyFilte
             control={form.control}
             name="purpose"
             render={({ field }) => (
-              <FormItem className='w-2/4'>
+              <FormItem className='w-full md:w-2/4'>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -49,13 +49,13 @@ export function FormFilterProperty({ form }: { form: UseFormReturn<PropertyFilte
           />
         </div>
 
-        <div className='flex gap-2 w-full'>
+        <div className='flex gap-2 w-full md:flex-row flex-col'>
           <div className='flex gap-2 w-full'>
             <FormField
               control={form.control}
               name="minPrice"
               render={({ field }) => (
-                <FormItem className='w-2/4'>
+                <FormItem className='w-full md:w-2/4'>
                   <FormControl>
                     <Input
                       {...field}
@@ -72,7 +72,7 @@ export function FormFilterProperty({ form }: { form: UseFormReturn<PropertyFilte
               control={form.control}
               name="maxPrice"
               render={({ field }) => (
-                <FormItem className='w-2/4'>
+                <FormItem className='w-full md:w-2/4'>
                   <FormControl>
                     <Input
                       {...field}
@@ -90,7 +90,7 @@ export function FormFilterProperty({ form }: { form: UseFormReturn<PropertyFilte
             control={form.control}
             name="minArea"
             render={({ field }) => (
-              <FormItem className='w-2/4'>
+              <FormItem className='w-full md:w-2/4'>
                 <FormControl>
                   <Input
                     {...field}
@@ -104,12 +104,12 @@ export function FormFilterProperty({ form }: { form: UseFormReturn<PropertyFilte
           />
         </div>
 
-        <div className='flex gap-2 w-full'>
+        <div className='flex gap-2 w-full md:flex-row flex-col'>
           <FormField
             control={form.control}
             name="neighborhood"
             render={({ field }) => (
-              <FormItem className='w-2/4'>
+              <FormItem className='w-full md:w-2/4'>
                 <FormControl>
                   <Input
                     {...field}
@@ -126,7 +126,7 @@ export function FormFilterProperty({ form }: { form: UseFormReturn<PropertyFilte
             control={form.control}
             name="propertyType"
             render={({ field }) => (
-              <FormItem className='w-2/4'>
+              <FormItem className='w-full md:w-2/4'>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -148,7 +148,7 @@ export function FormFilterProperty({ form }: { form: UseFormReturn<PropertyFilte
             control={form.control}
             name="bedrooms"
             render={({ field }) => (
-              <FormItem className='w-2/4'>
+              <FormItem className='w-full md:w-2/4'>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>

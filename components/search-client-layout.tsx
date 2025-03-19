@@ -1,18 +1,17 @@
 'use client'
 
-import { DropdownMenu, DropdownMenuLabel, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import logo from '../app/assets/logo-white.png'
 import wppIcon from '../app/assets/wpp.svg'
 import Image from 'next/image'
-import { LucideLoader2, MenuIcon } from 'lucide-react'
+import { LucideLoader2 } from 'lucide-react'
 import { useForm, useWatch } from 'react-hook-form'
 import { PropertyCard } from '@/components/property-card'
 import { PropertyFilters, Property } from '@/types/Property'
-import { FormFilterProperty } from '@/components/form-filter-property'
 import { useEffect, useState, useCallback } from 'react'
 import { debounce } from 'lodash'
 import { PaginationComponent } from './pagination-component'
 import { Button } from './ui/button'
+import { FiltersDrawer } from './filters-drawer'
+import { FloatingButton } from './floating-button'
 
 interface PaginationParams {
   page: number
@@ -27,7 +26,7 @@ interface PropertyResponse {
 
 const backgroundImage = `https://d1jn39u3umq5qg.cloudfront.net/static-images/apartamento-piscina.jpg`
 
-export function SearchClientLayout({ initialData }: { initialData?: PropertyResponse }) {
+export function SearchClientLayout() {
   const [properties, setProperties] = useState<Property[]>([])
   const [pagination, setPagination] = useState<PaginationParams>({
     page: 1,
@@ -93,7 +92,8 @@ export function SearchClientLayout({ initialData }: { initialData?: PropertyResp
 
   return (
     <main className="relative min-h-screen">
-      <div className="relative h-[60vh] flex items-end pb-4 justify-center">
+      <FloatingButton onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou vindo do site. Sou cliente e gostaria de mais informações.`, '_blank')} />
+      <div className="relative h-[80vh] lg:h-[60vh] flex items-center pb-4 px-2 md:px-10">
         <div className="absolute inset-0 bg-black/40 z-10" />
         <div className="absolute inset-0">
           <Image
@@ -106,7 +106,15 @@ export function SearchClientLayout({ initialData }: { initialData?: PropertyResp
         </div>
 
         <div className="relative z-10">
-          <FormFilterProperty form={form} />
+          <div className='flex flex-col mb-10 gap-2'>
+            <div className='flex flex-col text-xl sm:text-4xl lg:text-5xl font-bold text-gray-200 '>
+              <p>Encontre o lar dos</p>
+              <p>seus sonhos com facilidade.</p>
+            </div>
+
+            <p className='text-gray-200 text-xs sm:text-sm md:text-xl lg:text-2xl'>Use nossos filtros para personalizar sua busca e descubra o imóvel perfeito para você!</p>
+          </div>
+          <FiltersDrawer form={form} />
         </div>
       </div>
 
@@ -116,7 +124,7 @@ export function SearchClientLayout({ initialData }: { initialData?: PropertyResp
         </div>
       ) : properties.length > 0 ? (
         <>
-          <section className=' flex md:mx-10 lg:mx-auto flex-wrap items-center justify-center md:justify-evenly p-4 gap-4'>
+          <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:justify-items-center p-4'>
             {properties.map((property) => (
               <PropertyCard key={property.id} property={property} />
             ))}
@@ -125,7 +133,7 @@ export function SearchClientLayout({ initialData }: { initialData?: PropertyResp
         </>
       ) : (
         <div className='flex justify-center items-center h-[50vh] w-2/4 mx-auto'>
-          <p className='text-gray-500'>Nenhum imóvel encontrado para este filtro.</p>
+          <p className='text-gray-500'>Nenhum imóvel encontrado.</p>
         </div>
       )}
 
@@ -138,7 +146,7 @@ export function SearchClientLayout({ initialData }: { initialData?: PropertyResp
           <p className='text-sm md:text-base'>Nossa equipe vai encontrar a melhor condição para você fechar negócio, além de oferecer consultoria especializada para facilitar seu financiamento e garantir as melhores oportunidades!</p>
           <Button
             className="bg-green-600 hover:bg-green-700 mt-4"
-            onClick={() => window.open('https://wa.me/5584998128418?text=Olá! Estou procurando um imóvel e gostaria de ajuda para encontrar a opção ideal para mim.', '_blank')}
+            onClick={() => window.open('https://wa.me/558496703029?text=Olá! Estou procurando um imóvel e gostaria de ajuda para encontrar a opção ideal para mim.', '_blank')}
           >
             Entre em contato
             <Image src={wppIcon} alt="WhatsApp" className='w-4 h-4 ml-2' />

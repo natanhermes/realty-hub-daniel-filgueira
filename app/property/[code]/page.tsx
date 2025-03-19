@@ -2,10 +2,8 @@
 import { useParams, useRouter } from "next/navigation";
 
 import { useQuery } from "@tanstack/react-query";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ArrowLeft, MenuIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
-import logo from "../../assets/logo-black.png"
 import Image from "next/image";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Property } from "@/types/Property";
@@ -15,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { FloatingButton } from "@/components/floating-button";
 
 import { image } from "@prisma/client";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 const infrastructureLabels = {
   hasBarbecue: 'Churrasqueira',
@@ -48,27 +48,11 @@ export default function PropertyPage() {
   }
 
   return (
-    <div className="relative z-20  h-full">
-      <FloatingButton onClick={() => window.open(`https://wa.me/5584998128418?text=Olá! Estou interessado no imóvel "${property?.title}". Código: ${property?.code}.`, '_blank')} />
-      <div className="container mx-auto h-full px-4 ">
-        <nav className="flex justify-between items-center lg:pl-12 py-4">
-          <Image src={logo} alt="Logotipo" className='w-[14rem] ' />
-
-          <div className="flex items-center gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <MenuIcon size={24} className="cursor-pointer text-black" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="mr-4">
-                <DropdownMenuLabel>Serviços</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Anúncie seu imóvel</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </nav>
-
-        <section className="w-full">
+    <>
+      <Header />
+      <div className="relative z-20  h-full">
+        <FloatingButton onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou interessado no imóvel "${property?.title}". Código: ${property?.code}.`, '_blank')} />
+        <section className="w-full mx-auto max-w-screen-lg bg-white rounded-lg p-4 ">
           <Button onClick={goBack} variant="ghost" className="mb-4 text-gray-500 font-bold">
             <ArrowLeft size={16} />
             Voltar
@@ -85,6 +69,7 @@ export default function PropertyPage() {
                         alt="Imagem da propriedade"
                         fill
                         className="object-contain"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     </div>
                   </div>
@@ -106,7 +91,7 @@ export default function PropertyPage() {
                 {property?.purpose === 'rental' && <span><b>Aluguel: </b> {formatPrice(property?.rentalPrice || 0)}</span>}
                 {property?.purpose === 'daily' && <span><b>Diária: </b> {formatPrice(property?.dailyPrice || 0)}</span>}
                 {property?.purpose === 'sale-rent' && (
-                  <div className="flex justify-between">
+                  <div className="flex gap-2">
                     <span><b>Venda: </b>{formatPrice(property?.salePrice || 0)}</span>
                     <span><b>Aluguel: </b>{formatPrice(property?.rentalPrice || 0)}</span>
                   </div>
@@ -180,7 +165,7 @@ export default function PropertyPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="font-bold text-lg">Infraestrutura</span>
+              {property?.infrastructure && <span className="font-bold text-lg">Infraestrutura</span>}
 
               <div className="flex flex-wrap gap-2">
                 {property?.infrastructure && Object.entries(property.infrastructure)
@@ -196,8 +181,8 @@ export default function PropertyPage() {
             </div>
           </div>
         </section>
-
       </div>
-    </div>
+      <Footer />
+    </>
   )
 }

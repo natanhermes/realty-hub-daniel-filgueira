@@ -23,7 +23,7 @@ export function PropertyCard({ property, isAdmin = false }: { property: Property
       <CardContent className="w-full relative py-4">
         {!isAdmin && (
           <Image
-            onClick={() => window.open(`https://wa.me/5584998128418?text=Olá! Estou interessado no imóvel "${property.title}". Código: ${property.code}.`, '_blank')}
+            onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou interessado no imóvel "${property.title}". Código: ${property.code}.`, '_blank')}
             src={wppSvg}
             alt="Whatsapp"
             width={40}
@@ -36,9 +36,9 @@ export function PropertyCard({ property, isAdmin = false }: { property: Property
             <span className="text-lg font-bold line-clamp-1 max-w-[20rem]">{property.title}</span>
 
             <div className=' text-sm'>
-              {property.purpose === 'sale' && <h3><b>Venda: </b> {formatPrice(property.salePrice || 0)}</h3>}
-              {property.purpose === 'rent' && <h3><b>Aluguel: </b> {formatPrice(property.rentalPrice || 0)}</h3>}
-              {property.purpose === 'daily' && <h3><b>Diária: </b> {formatPrice(property.dailyPrice || 0)}</h3>}
+              {property.purpose === 'sale' && <h3><b>Venda: </b><br /> {formatPrice(property.salePrice || 0)}</h3>}
+              {property.purpose === 'rent' && <h3><b>Aluguel: </b><br /> {formatPrice(property.rentalPrice || 0)}</h3>}
+              {property.purpose === 'daily' && <h3><b>Diária: </b><br /> {formatPrice(property.dailyPrice || 0)}</h3>}
               {property.purpose === 'sale-rent' && (
                 <div className="flex justify-between">
                   <h3><b>Venda: </b>{formatPrice(property.salePrice || 0)}</h3>

@@ -4,7 +4,7 @@
 
 body {
   /* background: url('./assets/background.svg'); */
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 @layer base {

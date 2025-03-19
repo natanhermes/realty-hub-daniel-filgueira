@@ -6,8 +6,6 @@ import { Toaster } from '@/components/ui/sonner';
 import { Poppins } from 'next/font/google'
 
 import { QueryProvider } from './query-provider';
-import Header from '@/components/header';
-import { Footer } from '@/components/footer';
 
 const poppins = Poppins({
   weight: ['400'],
@@ -32,14 +30,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="pt-BR">
       <body className={`${bombalurina.variable} ${poppins.className} font-normal antialiased`}>
         <QueryProvider>
-          <Header />
 
           {children}
-          <Footer />
         </QueryProvider>
         <Toaster richColors position="top-right" duration={3000} closeButton />
       </body>
