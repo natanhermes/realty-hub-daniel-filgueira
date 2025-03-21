@@ -11,12 +11,13 @@ interface CarouselImagesProps {
   handleRemoveSelectedImage?: (index: number) => void
   autoplay?: boolean
   interval?: number
+  onNavigate?: () => void
 }
 
-export function CarouselImages({ imageUrls, handleRemoveSelectedImage, autoplay = false, interval = 1000 }: CarouselImagesProps) {
+export function CarouselImages({ imageUrls, handleRemoveSelectedImage, autoplay = false, interval = 1000, onNavigate }: CarouselImagesProps) {
   return (
     <Carousel autoplay={autoplay} autoplayInterval={interval} className="w-full">
-      <CarouselContent>
+      <CarouselContent onClick={onNavigate}>
         {imageUrls.map((image, index) => (
           <CarouselItem key={typeof image === 'string' ? index : image.id}>
             <div className="relative  h-[280px] rounded-lg bg-white flex items-center justify-center">

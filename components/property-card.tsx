@@ -1,3 +1,4 @@
+'use client'
 import { House, BedDouble, ShowerHead, Bath, Car } from "lucide-react";
 
 import { Card, CardContent } from "./ui/card";
@@ -6,6 +7,7 @@ import Image from "next/image";
 import { Property } from "@/types/Property";
 import { CarouselImages } from "./carousel-images";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import wppSvg from "@/app/assets/wpp.svg";
 import { cn, formatPrice } from "@/lib/utils";
@@ -13,12 +15,14 @@ import { cn, formatPrice } from "@/lib/utils";
 const ICONS_SIZE = 14;
 
 export function PropertyCard({ property, isAdmin = false }: { property: Property, isAdmin?: boolean }) {
+  const router = useRouter()
+
   return (
 
     <Card className={cn("max-w-[24rem] md:max-w-[20rem] lg:max-w-[20rem] w-full flex flex-col cursor-pointer hover:scale-105 hover:shadow-lg transition-all duration-300", {
       "opacity-50": !property.active
     })}>
-      <CarouselImages imageUrls={property.image} />
+      <CarouselImages imageUrls={property.image} onNavigate={() => router.push(`${isAdmin ? `/dashboard/my-properties/${property.code}` : `/property/${property.code}`}`)} />
 
       <CardContent className="w-full relative py-4">
         {!isAdmin && (
