@@ -50,9 +50,9 @@ export default function PropertyPage() {
   return (
     <>
       <Header />
-      <div className="relative z-20  h-full">
+      <div className="relative z-20 h-full">
         <FloatingButton onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou interessado no imóvel "${property?.title}". Código: ${property?.code}.`, '_blank')} />
-        <section className="w-full mx-auto max-w-screen-lg bg-white rounded-lg p-4 ">
+        <section className="w-full mx-auto max-w-screen-lg bg-white rounded-lg p-4 mt-24">
           <Button onClick={goBack} variant="ghost" className="mb-4 text-gray-500 font-bold">
             <ArrowLeft size={16} />
             Voltar
@@ -63,7 +63,7 @@ export default function PropertyPage() {
               {property?.image.map((image: image) => (
                 <CarouselItem key={image.id}>
                   <div className="relative rounded-lg bg-gray-100 flex items-center justify-center">
-                    <div className="w-full h-[20rem] md:h-[30rem]">
+                    <div className="w-full h-[20rem] md:h-[30rem] relative">
                       <Image
                         src={image.url}
                         alt="Imagem da propriedade"
@@ -71,6 +71,12 @@ export default function PropertyPage() {
                         className="object-contain"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="flex flex-col text-whiteIce/70 text-8xl">
+                          <span className="font-bombalurina">Daniel Filgueira</span>
+                          <span className="text-center text-xl">Creci: 8421-F</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CarouselItem>
