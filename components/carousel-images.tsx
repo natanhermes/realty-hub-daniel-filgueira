@@ -29,6 +29,12 @@ export function CarouselImages({ imageUrls, handleRemoveSelectedImage, autoplay 
                   className="object-contain"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="flex flex-col text-whiteIce/70 text-6xl">
+                    <span className="font-bombalurina">Daniel Filgueira</span>
+                    <span className="text-center text-xl">Creci: 8421-F</span>
+                  </div>
+                </div>
               </div>
               {handleRemoveSelectedImage && (
                 <Button

@@ -36,7 +36,7 @@ export function FiltersDrawer({ form }: { form: UseFormReturn<PropertyFilters> }
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" className="text-[#000066] ">Filtrar imóveis <FaFilter size={12} className="ml-2" /></Button>
+          <Button variant="outline" className="text-carbonBlack bg-whiteIce">Filtrar imóveis <FaFilter size={12} className="ml-2" /></Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
