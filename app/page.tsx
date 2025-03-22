@@ -128,7 +128,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id='sobre-imobiliaria' className='container py-16 px-4 xl:px-40 lg:mx-auto w-full'>
+        <section id='sobre-imobiliaria' className='py-16 px-4 xl:px-40 w-full'>
           <div className='flex flex-col gap-4'>
             <h2 className='text-xl sm:text-2xl text-lightGold font-bold w-full text-center lg:text-left'>Daniel Filgueira Imobiliária – Modernidade, Tecnologia e Elegância no Mercado Imobiliário</h2>
 
@@ -145,7 +145,7 @@ export default function Home() {
                 <span className='text-xs font-bold text-carbonBlack w-full text-center'>Daniel Filgueira - CRECI: 8421-F</span>
               </div>
 
-              <div className='text-lg lg:text-xl xl:text-2xl text-carbonBlack w-full md:w-[80%] mx-auto flex flex-col gap-6 mt-4 lg:mt-0'>
+              <div className='text-lg lg:text-xl xl:text-2xl text-carbonBlack w-full  mx-auto flex flex-col gap-6 mt-4 lg:mt-0'>
                 <p className='text-justify hyphens-auto'>
                   A Daniel Filgueira Imobiliária nasceu para transformar a experiência no mercado imobiliário. Liderada por Daniel Filgueira, o corretor mais jovem do estado do Rio Grande do Norte, nossa imobiliária traz um novo conceito para quem busca imóveis com sofisticação, inovação e atendimento personalizado.
                 </p>

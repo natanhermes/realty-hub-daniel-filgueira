@@ -18,12 +18,12 @@ export function Header() {
           <DropdownMenuLabel>Menu</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Link href={'#sobre-imobiliaria'}>
+            <Link href={'/#sobre-imobiliaria'}>
               <Button variant={'link'} className="text-lg ">Sobre a imobiliária</Button>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href={'#sobre-daniel-filgueira'}>
+            <Link href={'/#sobre-daniel-filgueira'}>
               <Button variant={'link'} className="text-lg">Sobre Daniel Filgueira</Button>
             </Link>
           </DropdownMenuItem>
@@ -42,6 +42,11 @@ export function Header() {
               onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou vindo do site e gostaria de cadastrar meu imóvel.`, '_blank')}>
               Quero cadastrar meu imóvel
             </Button>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href={'/privacy-policy'}>
+              <Button variant={'link'} className="text-lg">Política de privacidade</Button>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
