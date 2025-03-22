@@ -6,7 +6,7 @@ import Image from "next/image";
 import { FaInstagram } from "react-icons/fa";
 export function Footer() {
   return (
-    <footer className="mt-12 p-10 bg-[#000066] flex justify-between items-center">
+    <footer className="mt-12 p-10 bg-leadGray flex justify-between items-center">
       <div className="flex flex-col items-center gap-6">
         <div className="flex flex-col items-center">
           <Image src={logo} alt="Logotipo" className="w-[12rem]" />

@@ -8,10 +8,7 @@ export function Header() {
   return (
     <nav className="flex justify-between items-center py-4 px-2 xl:px-20 bg-leadGray fixed top-0 left-0 right-0 z-50">
       <Link href={'/'}>
-        <div className="flex flex-col items-center relative">
-          <p className="text-whiteIce font-bombalurina text-7xl font-medium">Daniel Filgueira</p>
-          <p className="text-whiteIce font-medium text-sm leading-[1] absolute -bottom-0 left-14">Imobiliária</p>
-        </div>
+        <p className="text-whiteIce font-bombalurina text-7xl font-medium">Daniel Filgueira</p>
       </Link>
       <DropdownMenu>
         <DropdownMenuTrigger>
