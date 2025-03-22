@@ -3,14 +3,14 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 
-import { Poppins } from 'next/font/google'
+import { Montserrat } from 'next/font/google'
 
 import { QueryProvider } from './query-provider';
 
-const poppins = Poppins({
-  weight: ['400'],
+const montserrat = Montserrat({
+  weight: ['400', '500', '600', '700', '800', '900'],
   subsets: ['latin'],
-  variable: '--font-poppins',
+  variable: '--font-montserrat',
 });
 
 const bombalurina = localFont({
@@ -33,7 +33,7 @@ export default function RootLayout({
 
   return (
     <html lang="pt-BR">
-      <body className={`${bombalurina.variable} ${poppins.className} font-normal antialiased`}>
+      <body className={`${bombalurina.variable} ${montserrat.className} font-normal antialiased`}>
         <QueryProvider>
 
           {children}
