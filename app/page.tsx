@@ -85,25 +85,25 @@ export default function Home() {
 
         </div>
 
-        <div className='relative w-full bg-leadGray h-[600px] md:h-[250px] lg:h-[200px]'>
-          <div className=' w-full justify-between lg:justify-start p-4 flex flex-col md:flex-row px-4 gap-2 absolute -top-14 z-20'>
-            <div className='flex flex-col gap-4 rounded-lg bg-whiteIce p-2'>
+        <div className='relative w-full bg-whiteIce h-[500px] md:h-[250px] lg:h-[200px]'>
+          <div className='w-full justify-between bg-whiteIce gap-2 lg:justify-around p-4 flex flex-col md:flex-row px-4 absolute -top-14 z-20'>
+            <div className='flex flex-col gap-4  max-w-[400px] p-2'>
               <span className='text-base xl:text-xl font-bold text-leadGray'>Os melhores imóveis para você</span>
-              <p className='text-sm text-leadGray'>
+              <p className='text-sm text-leadGray hyphens-auto text-justify'>
                 Na Daniel Filgueira Imobiliária, oferecemos uma seleção criteriosa de apartamentos, casas, salas comerciais e terrenos. Nossa equipe está pronta para auxiliá-lo na escolha do imóvel ideal. Entre em contato e agende uma visita.
               </p>
             </div>
 
-            <div className='flex flex-col gap-4 bg-whiteIce rounded-lg p-2'>
+            <div className='flex flex-col gap-4 max-w-[400px] p-2'>
               <span className='text-base xl:text-xl font-bold text-leadGray'>Assessoria completa na sua escolha</span>
-              <p className='text-sm text-leadGray'>
+              <p className='text-sm text-leadGray hyphens-auto text-justify'>
                 Desde a definição da localização até os detalhes do imóvel, garantimos um acompanhamento especializado para que você tome a melhor decisão com segurança e tranquilidade.
               </p>
             </div>
 
-            <div className='flex flex-col gap-4 bg-whiteIce rounded-lg p-2'>
+            <div className='flex flex-col gap-4 max-w-[400px] p-2'>
               <span className='text-base xl:text-xl font-bold text-leadGray'>Condições exclusivas para você</span>
-              <p className='text-sm text-leadGray'>
+              <p className='text-sm text-leadGray hyphens-auto text-justify'>
                 Nossa equipe trabalha para obter as melhores condições de compra, negociação e financiamento, proporcionando uma experiência transparente e eficiente em todo o processo.
               </p>
             </div>
