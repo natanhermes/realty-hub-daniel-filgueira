@@ -1,17 +1,17 @@
 'use client'
 import Link from "next/link";
 import { Button } from "./ui/button";
-import logo from "@/app/assets/logo-white.png";
 import Image from "next/image";
 import { FaInstagram } from "react-icons/fa";
+
+import googleSecurity from "@/app/assets/google-security.png";
+import logoSSL from "@/app/assets/logo-ssl.png";
+
 export function Footer() {
   return (
-    <footer className="mt-12 p-10 bg-leadGray flex justify-between items-center">
+    <footer className="mt-12 p-10 bg-leadGray flex flex-col gap-6 md:flex-row justify-between items-center">
       <div className="flex flex-col items-center gap-6">
-        <div className="flex flex-col items-center">
-          <Image src={logo} alt="Logotipo" className="w-[12rem]" />
-          <p className="text-white font-bombalurina font-medium text-4xl leading-[0.5]">Imobiliaria</p>
-        </div>
+        <p className="text-whiteIce font-bombalurina text-7xl font-medium">Daniel Filgueira</p>
         <p className="text-white text-center text-xs">
           © 2025 Daniel Filgueira. Todos os direitos reservados.
         </p>
@@ -42,6 +42,15 @@ export function Footer() {
           <Button variant="link" className='text-white'>
             Política de privacidade
           </Button>
+        </Link>
+      </div>
+
+      <div className="flex flex-col items-center gap-2">
+        <Link href="https://transparencyreport.google.com/safe-browsing/search?url=danielfilgueira.com.br&hl=pt_BR" target="_blank">
+          <Image src={googleSecurity} alt="Logotipo" className="w-[6rem]" />
+        </Link>
+        <Link href="https://www.sslshopper.com/ssl-checker.html#hostname=danielfilgueira.com.br" target="_blank">
+          <Image src={logoSSL} alt="Logotipo" className="w-[6rem]" />
         </Link>
       </div>
     </footer>
