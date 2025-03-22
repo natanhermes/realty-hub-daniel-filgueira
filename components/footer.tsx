@@ -38,6 +38,11 @@ export function Footer() {
         <Button variant="link" className='text-white' onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou vindo do site e gostaria de cadastrar meu imóvel.`, '_blank')}>
           Quero cadastrar meu imóvel
         </Button>
+        <Link href="/privacy-policy">
+          <Button variant="link" className='text-white'>
+            Política de privacidade
+          </Button>
+        </Link>
       </div>
     </footer>
   );
