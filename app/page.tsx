@@ -43,7 +43,7 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="min-h-screen ">
+      <main className="min-h-screen mt-12">
         <FloatingButton onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou vindo do site. Sou cliente e gostaria de mais informações.`, '_blank')} />
         <div className="relative h-[80vh]">
           <div className="absolute inset-0 bg-black/40 z-10" />
@@ -73,7 +73,7 @@ export default function Home() {
                   <p className='text-left font-semibold text-xs sm:text-sm md:text-xl lg:text-2xl mt-4 '>Temos o imóvel perfeito para você, sem complicação!</p>
                 </div>
                 <Link className="" href={`/search`}>
-                  <div className="max-w-3xl flex gap-2 bg-darkBeige text-whiteIce items-center p-4 rounded-full hover:scale-125 hover:shadow-lg transition-all duration-300">
+                  <div className="max-w-3xl flex gap-2 bg-darkBlue text-whiteIce items-center p-4 rounded-full hover:scale-125 hover:shadow-lg transition-all duration-300">
                     <p className='font-bold text-sm'>PESQUISAR IMÓVEIS</p>
                     <Search className="h-4 w-4 font-bold" />
                   </div>
@@ -88,21 +88,21 @@ export default function Home() {
         <div className='relative w-full bg-whiteIce h-[500px] md:h-[250px] lg:h-[200px]'>
           <div className='w-full justify-between bg-whiteIce gap-2 lg:justify-around p-4 flex flex-col md:flex-row px-4 absolute -top-14 z-20'>
             <div className='flex flex-col gap-4  max-w-[400px] p-2'>
-              <span className='text-base xl:text-xl font-bold text-leadGray'>Os melhores imóveis para você</span>
+              <span className='text-base xl:text-xl font-bold text-darkBlue'>Os melhores imóveis para você</span>
               <p className='text-sm text-leadGray hyphens-auto text-justify'>
                 Na Daniel Filgueira Imobiliária, oferecemos uma seleção criteriosa de apartamentos, casas, salas comerciais e terrenos. Nossa equipe está pronta para auxiliá-lo na escolha do imóvel ideal. Entre em contato e agende uma visita.
               </p>
             </div>
 
             <div className='flex flex-col gap-4 max-w-[400px] p-2'>
-              <span className='text-base xl:text-xl font-bold text-leadGray'>Assessoria completa na sua escolha</span>
+              <span className='text-base xl:text-xl font-bold text-darkBlue'>Assessoria completa na sua escolha</span>
               <p className='text-sm text-leadGray hyphens-auto text-justify'>
                 Desde a definição da localização até os detalhes do imóvel, garantimos um acompanhamento especializado para que você tome a melhor decisão com segurança e tranquilidade.
               </p>
             </div>
 
             <div className='flex flex-col gap-4 max-w-[400px] p-2'>
-              <span className='text-base xl:text-xl font-bold text-leadGray'>Condições exclusivas para você</span>
+              <span className='text-base xl:text-xl font-bold text-darkBlue'>Condições exclusivas para você</span>
               <p className='text-sm text-leadGray hyphens-auto text-justify'>
                 Nossa equipe trabalha para obter as melhores condições de compra, negociação e financiamento, proporcionando uma experiência transparente e eficiente em todo o processo.
               </p>
@@ -110,9 +110,9 @@ export default function Home() {
           </div>
         </div>
 
-        <section className='py-12 px-4 xl:px-40 w-full bg-leadGray'>
+        <section className='py-12 px-4 lg:px-40 2xl:px-80 w-full bg-leadGray'>
           <div className='flex flex-col gap-4'>
-            <h2 className='text-xl sm:text-2xl text-lightGold font-bold'>Imóveis em destaque</h2>
+            <h2 className='text-xl sm:text-4xl text-lightGold font-bold'>Imóveis em destaque</h2>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:justify-items-center'>
               {isLoading ? (
@@ -128,9 +128,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section id='sobre-imobiliaria' className='py-16 px-4 xl:px-40 w-full'>
+        <section id='sobre-imobiliaria' className='py-16 px-4 lg:px-40 2xl:px-80 w-full'>
           <div className='flex flex-col gap-4'>
-            <h2 className='text-xl sm:text-2xl text-lightGold font-bold w-full text-center lg:text-left'>Daniel Filgueira Imobiliária – Modernidade, Tecnologia e Elegância no Mercado Imobiliário</h2>
+            <h2 className='text-xl sm:text-4xl text-lightGold font-bold w-full text-center lg:text-left'>Daniel Filgueira Imobiliária – Modernidade, Tecnologia e Elegância no Mercado Imobiliário</h2>
 
             <div className='flex flex-col lg:flex-row lg:gap-10 justify-between'>
               <div className='flex flex-col gap-2'>
@@ -145,7 +145,7 @@ export default function Home() {
                 <span className='text-xs font-bold text-carbonBlack w-full text-center'>Daniel Filgueira - CRECI: 8421-F</span>
               </div>
 
-              <div className='text-lg lg:text-xl xl:text-2xl text-carbonBlack w-full  mx-auto flex flex-col gap-6 mt-4 lg:mt-0'>
+              <div className='text-lg lg:text-xl xl:text-2xl text-carbonBlack w-full  mx-auto flex flex-col gap-6 mt-4 '>
                 <p className='text-justify hyphens-auto'>
                   A Daniel Filgueira Imobiliária nasceu para transformar a experiência no mercado imobiliário. Liderada por Daniel Filgueira, o corretor mais jovem do estado do Rio Grande do Norte, nossa imobiliária traz um novo conceito para quem busca imóveis com sofisticação, inovação e atendimento personalizado.
                 </p>
@@ -162,9 +162,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section id='sobre-daniel-filgueira' className=" py-16 px-6 xl:px-40 bg-leadGray">
+        <section id='sobre-daniel-filgueira' className=" py-16 px-6 lg:px-40 2xl:px-80 bg-leadGray">
           <div className="flex flex-col gap-8 ">
-            <h2 className='text-xl sm:text-2xl text-lightGold font-bold w-full text-center lg:text-left'>Daniel Filgueira – Excelência, Tecnologia e Inovação no Mercado Imobiliário de Natal</h2>
+            <h2 className='text-xl sm:text-4xl text-lightGold font-bold w-full text-center lg:text-left'>Daniel Filgueira – Excelência, Tecnologia e Inovação no Mercado Imobiliário de Natal</h2>
             <div className="text-center flex flex-col md:flex-row gap-6 items-center justify-around">
               <div className="relative w-full h-[600px] shadow-lg">
                 <Image

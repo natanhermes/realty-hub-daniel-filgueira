@@ -15,6 +15,7 @@ const config: Config = {
 				bombalurina: ['var(--font-bombalurina)'],
 			},
 			colors: {
+				darkBlue: '#1C2C46',
 				darkBeige: '#8C7A6B',
 				carbonBlack: '#1C1C1C',
 				leadGray: '#3A3A3A',

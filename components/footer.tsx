@@ -9,7 +9,7 @@ import logoSSL from "@/app/assets/logo-ssl.png";
 
 export function Footer() {
   return (
-    <footer className="mt-12 p-10 bg-leadGray flex flex-col gap-6 md:flex-row justify-between items-center">
+    <footer className="p-10 bg-darkBlue flex flex-col gap-6 md:flex-row justify-between items-center">
       <div className="flex flex-col items-center gap-6">
         <p className="text-whiteIce font-bombalurina text-7xl font-medium">Daniel Filgueira</p>
         <p className="text-white text-center text-xs">
@@ -41,6 +41,11 @@ export function Footer() {
         <Link href="/privacy-policy">
           <Button variant="link" className='text-white'>
             Política de privacidade
+          </Button>
+        </Link>
+        <Link href="/para-corretor">
+          <Button variant="link" className='text-white'>
+            Para corretor
           </Button>
         </Link>
       </div>
