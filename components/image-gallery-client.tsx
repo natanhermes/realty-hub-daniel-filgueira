@@ -6,7 +6,6 @@ import { ImageUp, ArrowLeft, Trash, CornerLeftUp } from "lucide-react";
 import { Input } from "./ui/input";
 import { PropertyFormClient } from "./property-form";
 import { z } from "zod";
-import createOrUpdatePropertyAction from "@/app/actions/createOrUpdatePropertyAction";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
@@ -14,6 +13,9 @@ import { toast } from "sonner"
 import { CarouselImages } from "./carousel-images";
 import { Property } from "@/types/Property";
 import { infrastructure } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
+import { PropertyService } from "@/app/services/propertyService";
+import { uploadPropertyImage } from "@/lib/s3";
 
 const ICONS_SIZE = 16
 
@@ -80,6 +82,21 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState<{ id: string, url: string }[]>(property?.image || []);
 
+  const { mutateAsync: createProperty } = useMutation({
+    mutationFn: async ({ formData }: { formData: FormData }) => {
+      const response = await fetch('/api/property', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao criar imóvel');
+      }
+
+      return response.json();
+    }
+  });
+
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
@@ -117,12 +134,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     try {
       const formData = new FormData()
 
-      if (data.images) {
-        const files = Array.from(data.images)
-        files.forEach((file) => {
-          formData.append(`images`, file)
-        })
-      }
+      console.log('isEdit', isEditing)
 
       if (isEditing) {
         formData.append('existingImages', JSON.stringify(existingImages))
@@ -138,25 +150,55 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
         }
       })
 
-      let response: { success: boolean, error?: string }
-
       if (isEditing) {
         formData.append('id', property?.id ?? '')
-        response = await createOrUpdatePropertyAction(formData, property?.id ?? '', true)
+        // toast.promise(
+        //   createOrUpdatePropertyAction(formData, property?.id ?? '', true),
+        //   {
+        //     success: 'Imóvel atualizado com sucesso!',
+        //     error: 'Ocorreu um erro ao atualizar o imóvel.',
+        //   }
+        // )
       } else {
-        response = await createOrUpdatePropertyAction(formData)
-      }
+        toast.promise(
+          async () => {
+            const images = Array.from(data.images || [])
+            await createProperty(
+              { formData },
+              {
+                onSuccess: async (propertyCreated) => {
+                  try {
+                    const imageUrls = await Promise.all(
+                      images.map(async (image) => await uploadPropertyImage(image, propertyCreated.id))
+                    )
 
+                    const response = await fetch('/api/property/images', {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        propertyId: propertyCreated.id,
+                        imageUrls
+                      })
+                    })
 
-      if (response.success) {
-        toast.success(isEditing ? 'Imóvel atualizado com sucesso!' : 'Imóvel cadastrado com sucesso!')
-        router.push('/dashboard/my-properties')
-      } else {
-        toast.error(response.error)
+                    if (!response.ok) {
+                      throw new Error('Erro ao salvar imagens no banco')
+                    }
+                  } catch (imageError) {
+                    console.error("Erro ao realizar o upload das imagens:", imageError);
+                    await PropertyService.deleteProperty(propertyCreated.id);
+                  }
+                }
+              }
+            )
+          },
+          {
+            success: 'Imóvel cadastrado com sucesso!',
+            error: e => e.message,
+          }
+        )
       }
     } catch (error) {
-      console.log(error)
-      toast.error('Ocorreu um erro ao salvar o imóvel')
+      toast.error('Ocorreu um erro desconhecido. Entre em contato com o administrador.')
     }
   };
 

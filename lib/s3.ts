@@ -1,16 +1,6 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION!,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-});
-
-export async function uploadPropertyImage(file: File, propertyId: string) {
+export async function uploadPropertyImage(image: File, propertyId: string) {
   try {
-    if (!file) {
+    if (!image) {
       throw new Error('Arquivo não fornecido');
     }
 
@@ -18,29 +8,31 @@ export async function uploadPropertyImage(file: File, propertyId: string) {
       throw new Error('ID da propriedade não fornecido');
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const fileName = `${Date.now()}-${file.name}`;
-    const key = `properties/${propertyId}/${fileName}`;
-
-    if (!process.env.AWS_BUCKET_NAME || !process.env.AWS_REGION) {
-      throw new Error('Variáveis de ambiente AWS não configuradas corretamente');
-    }
-
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: process.env.AWS_BUCKET_NAME,
-        Key: key,
-        Body: buffer,
-        ContentType: file.type,
+    const presignedUrlResponse = await fetch('/api/upload/presigned-url-aws', {
+      method: 'POST',
+      body: JSON.stringify({
+        fileName: image.name,
+        fileType: image.type,
+        propertyId
       })
-    );
+    })
 
-    return `${process.env.AWS_CLOUDFRONT_URL}/${key}`;
+    const { url, key } = await presignedUrlResponse.json()
+
+    await fetch(url, {
+      method: 'PUT',
+      body: image,
+      headers: {
+        'Content-Type': image.type
+      }
+    })
+
+    return `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${key}`
 
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Erro ao fazer upload da imagem: ${error.message}`);
+      throw new Error(`Erro ao realizar upload da imagem: ${error.message}`);
     }
-    throw new Error('Erro desconhecido ao fazer upload da imagem');
+    throw new Error('Erro desconhecido ao realizar upload da imagem');
   }
 }
