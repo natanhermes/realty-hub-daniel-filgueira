@@ -46,6 +46,7 @@ model property {
   location             String? // URL da localização
   description          String? // Descrição da propriedade
   active               Boolean? // Propriedade está ativa
+  highlight            Boolean? // Propriedade está em destaque
   infrastructure       infrastructure?
   image                image[]
   createdAt            DateTime        @default(now())

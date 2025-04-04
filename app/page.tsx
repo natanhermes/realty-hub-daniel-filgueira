@@ -37,7 +37,7 @@ export default function Home() {
 
   const { data: properties, isLoading } = useQuery<Property[]>({
     queryKey: ['properties'],
-    queryFn: () => fetch(`/api/properties`).then(res => res.json()),
+    queryFn: () => fetch(`/api/properties/highlights`).then(res => res.json()),
   })
 
   return (

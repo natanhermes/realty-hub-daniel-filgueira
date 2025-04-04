@@ -2,7 +2,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { ImageUp, ArrowLeft, Trash, CornerLeftUp } from "lucide-react";
+import { ImageUp, ArrowLeft, Trash, CornerLeftUp, Star, StarOff } from "lucide-react";
 import { Input } from "./ui/input";
 import { PropertyFormClient } from "./property-form";
 import { z } from "zod";
@@ -215,16 +215,28 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     }
   }
 
-  const handleChangeStatus = async (id: string) => {
-    const response = await fetch(`/api/property/change-status/${id}`, {
+  const handleChangeStatus = async (code: string) => {
+    toast.promise(fetch(`/api/property/change-status/${code}`, {
       method: 'PUT',
-      body: JSON.stringify({ id })
+      body: JSON.stringify({ code })
+    }), {
+      success: 'Imóvel ativado com sucesso!',
+      error: 'Ocorreu um erro ao ativar o imóvel.',
     })
 
-    if (response.ok) {
-      toast.success(`Imóvel ${property?.active ? "inativado" : "ativado"} com sucesso!`)
-      router.push('/dashboard/my-properties')
-    }
+    router.push('/dashboard/my-properties')
+  }
+
+  const handleChangeHighlight = async (code: string) => {
+    toast.promise(fetch(`/api/property/change-highlight/${code}`, {
+      method: 'PUT',
+      body: JSON.stringify({ code })
+    }), {
+      success: `Imóvel ${property?.highlight ? 'removido' : 'destacado'} com sucesso!`,
+      error: 'Ocorreu um erro ao destacar o imóvel.',
+    })
+
+    router.push('/dashboard/my-properties')
   }
 
   useEffect(() => {
@@ -276,24 +288,45 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
             />
             <div className="flex gap-2">
               {isEditing && (
-                <Button
-                  type="button"
-                  variant={property?.active ? "destructive" : "default"}
-                  className={`flex items-center gap-2 `}
-                  onClick={() => handleChangeStatus(property?.id!)}
-                >
-                  {property?.active ? (
-                    <>
-                      <Trash size={ICONS_SIZE} />
-                      Inativar
-                    </>
-                  ) : (
-                    <>
-                      <CornerLeftUp size={ICONS_SIZE} />
-                      Ativar
-                    </>
-                  )}
-                </Button>
+                <>
+                  <Button
+                    type="button"
+                    variant={property?.active ? "destructive" : "default"}
+                    className={`flex items-center gap-2 `}
+                    onClick={() => handleChangeStatus(property?.code!)}
+                  >
+                    {property?.active ? (
+                      <>
+                        <Trash size={ICONS_SIZE} />
+                        Inativar
+                      </>
+                    ) : (
+                      <>
+                        <CornerLeftUp size={ICONS_SIZE} />
+                        Ativar
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant={property?.highlight ? "default" : "outline"}
+                    className={`flex items-center gap-2 ${!property?.highlight ? 'bg-yellow-400 hover:bg-yellow-500' : ''}`}
+                    onClick={() => handleChangeHighlight(property?.code!)}
+                  >
+                    {property?.highlight ? (
+                      <>
+                        <StarOff size={ICONS_SIZE} />
+                        Remover destaque
+                      </>
+                    ) : (
+                      <>
+                        <Star size={ICONS_SIZE} />
+                        Destacar
+                      </>
+                    )}
+                  </Button>
+                </>
               )}
 
               <Button

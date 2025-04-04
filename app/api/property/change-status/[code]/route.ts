@@ -1,11 +1,11 @@
 import db from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(request: NextRequest) {
-  const { id } = await request.json();
+export async function PUT(_: NextRequest, { params }: { params: Promise<{ code: string }> }) {
+  const { code } = await params
 
   const property = await db.property.findUnique({
-    where: { id }
+    where: { code }
   })
 
   if (!property) {
@@ -16,7 +16,7 @@ export async function PUT(request: NextRequest) {
   }
 
   await db.property.update({
-    where: { id },
+    where: { id: property.id },
     data: { active: !property.active }
   })
 

@@ -43,6 +43,19 @@ export class PropertyService {
     return properties;
   }
 
+  static async listHighlightedProperties() {
+    const properties = await db.property.findMany({
+      where: {
+        highlight: true
+      },
+      include: {
+        image: true,
+        infrastructure: true,
+      },
+    });
+    return properties;
+  }
+
   static async listPropertiesByFilters(filters: PropertyFilters): Promise<PaginatedResponse> {
     const itemsPerPage = 10;
     const page = filters.page || 1;

@@ -17,3 +17,25 @@ export type PropertyFilters = {
   page?: number
 }
 
+export type PropertyFeatures = Omit<property & { infrastructure: infrastructure | null, images: image[] }, "id" | "createdAt" | "updatedAt">
+
+export type NumericFields = {
+  salePrice: string | null
+  rentalPrice: string | null
+  dailyPrice: string | null
+  condominiumFee: string | null
+  iptuValue: string | null
+  totalArea: string | null
+  builtArea: string | null
+  numberOfBedrooms: string | null
+  numberOfSuites: string | null
+  numberOfBathrooms: string | null
+  numberOfParkingSpots: string | null
+  constructionYear: string | null
+  floor: string | null
+}
+
+export type BooleanFields = {
+  acceptsFinancing: string | null
+  acceptsExchange: string | null
+}
