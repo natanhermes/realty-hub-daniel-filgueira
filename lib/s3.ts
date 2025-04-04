@@ -1,11 +1,11 @@
-export async function uploadPropertyImage(image: File, propertyId: string) {
+export async function uploadPropertyImage(image: File, code: string) {
   try {
     if (!image) {
       throw new Error('Arquivo não fornecido');
     }
 
-    if (!propertyId) {
-      throw new Error('ID da propriedade não fornecido');
+    if (!code) {
+      throw new Error('Código do imóvel não fornecido');
     }
 
     const presignedUrlResponse = await fetch('/api/upload/presigned-url-aws', {
@@ -13,7 +13,7 @@ export async function uploadPropertyImage(image: File, propertyId: string) {
       body: JSON.stringify({
         fileName: image.name,
         fileType: image.type,
-        propertyId
+        code
       })
     })
 

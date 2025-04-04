@@ -2,7 +2,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export async function POST(request: Request) {
-  const { fileName, fileType, propertyId } = await request.json();
+  const { fileName, fileType, code } = await request.json();
 
   const s3Client = new S3Client({
     region: process.env.AWS_REGION!,
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
     },
   });
 
-  const key = `properties/${propertyId}/${fileName}`;
+  const key = `properties/${code}/${fileName}`;
 
   const command = new PutObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME!,
