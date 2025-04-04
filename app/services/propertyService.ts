@@ -258,7 +258,10 @@ export class PropertyService {
             location: rawData.location,
             description: rawData.description,
           }
-        }).catch(() => {
+        }).catch((error) => {
+          if (error.code === 'P2002') {
+            throw new PropertyHttpError('Já existe um imóvel com este código.', 409);
+          }
           throw new PropertyHttpError(`Erro ao atualizar imóvel no banco de dados`, 500);
         });
 
@@ -298,9 +301,9 @@ export class PropertyService {
         }
       }).catch((error) => {
         if (error.code === 'P2002') {
-          throw new PropertyHttpError('Já existe um imóvel com este código', 409);
+          throw new PropertyHttpError('Já existe um imóvel com este código.', 409);
         }
-        throw new PropertyHttpError(`Erro ao editar imóvel no banco de dados`, 500);
+        throw new PropertyHttpError(`Erro ao criar imóvel no banco de dados.`, 500);
       });
 
       try {
@@ -317,17 +320,25 @@ export class PropertyService {
     } catch (error) {
       console.error('Erro ao criar propriedade:', error);
 
+      let errorMessage = 'Ocorreu um erro ao criar a propriedade. Por favor, tente novamente.';
+      let statusCode = 500;
+
       if (error instanceof PropertyHttpError) {
-        return { success: false, error: error.message };
-      }
-      if (error instanceof PropertyValidationError) {
-        return { success: false, error: error.message };
-      }
-      if (error instanceof SyntaxError) {
-        return { success: false, error: 'Formato de dados inválido' };
+        errorMessage = error.message;
+        statusCode = error.statusCode;
       }
 
-      return { success: false, error: 'Ocorreu um erro ao criar a propriedade. Por favor, tente novamente.' };
+      if (error instanceof PropertyValidationError) {
+        errorMessage = error.message;
+        statusCode = 400;
+      }
+
+      if (error instanceof SyntaxError) {
+        errorMessage = 'Formato de dados inválido';
+        statusCode = 400;
+      }
+
+      return { success: false, error: errorMessage, statusCode };
     }
   }
 

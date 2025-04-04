@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
 
     if (!formData) {
       return NextResponse.json(
-        { error: "Dados do formulário são obrigatórios" },
+        { statusText: "Dados do formulário são obrigatórios" },
         { status: 400 }
       );
     }
@@ -16,8 +16,8 @@ export async function POST(request: NextRequest) {
 
     if (!response.success) {
       return NextResponse.json(
-        { error: "Erro ao criar imóvel." },
-        { status: 500 }
+        { statusText: response.error },
+        { status: response.statusCode || 500 }
       );
     }
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Erro na rota POST /api/property:", error);
     return NextResponse.json(
-      { error: "Erro interno do servidor" },
+      { statusText: "Erro interno do servidor" },
       { status: 500 }
     );
   }

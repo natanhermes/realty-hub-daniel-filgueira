@@ -8,7 +8,7 @@ import { PropertyFormClient } from "./property-form";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem } from "./ui/form";
+import { Form, FormControl, FormItem } from "./ui/form";
 import { toast } from "sonner"
 import { CarouselImages } from "./carousel-images";
 import { Property } from "@/types/Property";
@@ -81,7 +81,6 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [imagesList, setImagesList] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<{ id: string, url: string }[]>(property?.image || []);
 
   const { mutateAsync: createProperty, isPending: isCreatingProperty } = useMutation({
@@ -91,11 +90,13 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
         body: formData
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        throw new Error('Erro ao criar imóvel');
+        throw new Error(responseData.statusText || 'Erro ao criar imóvel');
       }
 
-      return response.json();
+      return responseData;
     }
   });
 
@@ -106,11 +107,13 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
         body: formData
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        throw new Error('Erro ao editar imóvel');
+        throw new Error(responseData.statusText || 'Erro ao editar imóvel');
       }
 
-      return response.json();
+      return responseData;
     }
   });
 
@@ -175,7 +178,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
               {
                 onSuccess: async (propertyUpdated) => {
                   try {
-                    const newImages = imagesList.filter(image => !existingImages.some(img => img.url === URL.createObjectURL(image)))
+                    const newImages = selectedImages.filter(image => !existingImages.some(img => img.url === URL.createObjectURL(image)))
                     const imageUrls = await Promise.all(
                       newImages.map(async (image) => await uploadPropertyImage(image, propertyUpdated.code))
                     )
@@ -215,7 +218,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
                 onSuccess: async (propertyCreated) => {
                   try {
                     const imageUrls = await Promise.all(
-                      imagesList.map(async (image) => await uploadPropertyImage(image, propertyCreated.code))
+                      selectedImages.map(async (image) => await uploadPropertyImage(image, propertyCreated.code))
                     )
 
                     const response = await fetch('/api/property/images', {
@@ -251,7 +254,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     }
   };
 
-  const handleRemoveSelectedImage = (index: number) => () => {
+  const handleRemoveSelectedImage = (index: number) => {
     if (index < existingImages.length) {
       setExistingImages(prev => prev.filter((_, i) => i !== index))
     } else {
@@ -288,25 +291,43 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     router.push('/dashboard/my-properties')
   }
 
+  const [selectedImages, setSelectedImages] = useState<File[]>([])
+  const handleOnChangeImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) {
+      toast.warning('Nenhuma imagem selecionada')
+      return
+    }
+
+    const newImages = Array.from(files).filter(file => file.size > 0)
+    if (newImages.length === 0) {
+      toast.warning('Nenhuma imagem selecionada')
+      return
+    }
+
+    const newImagesWithoutFileSelected = newImages.filter(image => !selectedImages.some(selectedImage => selectedImage.name === image.name))
+
+    const updatedFiles = [...selectedImages, ...newImagesWithoutFileSelected];
+    setSelectedImages(updatedFiles)
+
+    // const dt = new DataTransfer();
+    // updatedFiles.forEach(file => dt.items.add(file));
+    // form.setValue("images", dt.files);
+  }
+
   useEffect(() => {
-    const images = Array.from(form.watch("images") || []);
-    const urls = images.map(image => URL.createObjectURL(image));
-    const allImages = [...existingImages.map(img => img.url), ...urls];
+    const newUrls = selectedImages.map(image => URL.createObjectURL(image));
+
+    const allImages = [...(existingImages.map(img => img.url)), ...newUrls];
+
     const uniqueImages = allImages.filter((url, index) => allImages.indexOf(url) === index);
-    setImageUrls(prev => {
-      if (!isEditing) {
-        return [...prev, ...uniqueImages]
-      }
 
-      return uniqueImages
-    });
-    setImagesList(prev => [...prev, ...images]);
-
+    setImageUrls(uniqueImages);
 
     return () => {
-      urls.forEach(url => URL.revokeObjectURL(url));
+      newUrls.forEach(url => URL.revokeObjectURL(url));
     };
-  }, [form.watch("images"), existingImages]);
+  }, [existingImages, selectedImages]);
 
   if (isCreatingProperty || isUpdatingProperty) {
     return <div className="flex items-center justify-center h-screen">
@@ -328,28 +349,19 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
               Voltar
             </Button>
 
-            <FormField
-              control={form.control}
-              name="images"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      ref={fileInputRef}
-                      type="file"
-                      id="image"
-                      className="hidden"
-                      onChange={(e) => {
-                        const files = e.target.files;
-                        field.onChange(files);
-                      }}
-                      multiple
-                      accept="image/jpeg,image/png,image/jpg,image/heic"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormControl>
+                <Input
+                  ref={fileInputRef}
+                  type="file"
+                  id="image"
+                  className="hidden"
+                  onChange={handleOnChangeImages}
+                  multiple
+                  accept="image/jpeg,image/png,image/jpg,image/heic"
+                />
+              </FormControl>
+            </FormItem>
             <div className="flex gap-2">
               {isEditing && (
                 <>

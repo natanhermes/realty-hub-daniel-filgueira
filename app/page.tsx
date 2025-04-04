@@ -198,7 +198,7 @@ export default function Home() {
                   className="object-cover rounded-lg shadow-lg"
                 />
               </div>
-              <div className="text-lg lg:text-xl xl:text-2xl w-full flex flex-col justify-around gap-1 text-center md:text-left text-whiteIce text-justify hyphens-auto">
+              <div className="text-lg lg:text-xl xl:text-2xl w-full flex flex-col justify-around gap-1 md:text-left text-whiteIce text-justify hyphens-auto">
                 <p>Cada detalhe de sua imobiliária é pensado para oferecer aos clientes a melhor solução possível, com um atendimento impecável e que antecipa as necessidades do mercado. A combinação da modernidade tecnológica com o compromisso com a qualidade e o atendimento personalizado coloca Daniel Filgueira como um verdadeiro pioneiro no cenário imobiliário de Natal.</p>
                 <p>Para quem busca mais do que apenas um imóvel, mas uma experiência única e bem-sucedida, a Daniel Filgueira Imobiliária é sinônimo de confiança, inovação e excelência.</p>
               </div>
