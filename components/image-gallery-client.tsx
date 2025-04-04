@@ -2,7 +2,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { ImageUp, ArrowLeft, Trash, CornerLeftUp, Star, StarOff } from "lucide-react";
+import { ImageUp, ArrowLeft, Trash, CornerLeftUp, Star, StarOff, Loader2 } from "lucide-react";
 import { Input } from "./ui/input";
 import { PropertyFormClient } from "./property-form";
 import { z } from "zod";
@@ -16,6 +16,7 @@ import { infrastructure } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { PropertyService } from "@/app/services/propertyService";
 import { uploadPropertyImage } from "@/lib/s3";
+import { revalidatePropertiesAction } from "@/app/actions/revalidatePropertiesAction";
 
 const ICONS_SIZE = 16
 
@@ -80,9 +81,10 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imagesList, setImagesList] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<{ id: string, url: string }[]>(property?.image || []);
 
-  const { mutateAsync: createProperty } = useMutation({
+  const { mutateAsync: createProperty, isPending: isCreatingProperty } = useMutation({
     mutationFn: async ({ formData }: { formData: FormData }) => {
       const response = await fetch('/api/property', {
         method: 'POST',
@@ -91,6 +93,21 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
 
       if (!response.ok) {
         throw new Error('Erro ao criar imóvel');
+      }
+
+      return response.json();
+    }
+  });
+
+  const { mutateAsync: updateProperty, isPending: isUpdatingProperty } = useMutation({
+    mutationFn: async ({ formData }: { formData: FormData }) => {
+      const response = await fetch(`/api/property/${property?.code}`, {
+        method: 'PUT',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao editar imóvel');
       }
 
       return response.json();
@@ -134,14 +151,13 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     try {
       const formData = new FormData()
 
-      console.log('isEdit', isEditing)
-
       if (isEditing) {
         formData.append('existingImages', JSON.stringify(existingImages))
       }
 
       Object.entries(data).forEach(([key, value]) => {
         if (key === 'images') return
+        if (key === 'existingImages') return
         if (value === undefined || value === null) return
         if (key === "propertyFeatures" && Array.isArray(value)) {
           formData.append(key, JSON.stringify(value))
@@ -152,24 +168,54 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
 
       if (isEditing) {
         formData.append('id', property?.id ?? '')
-        // toast.promise(
-        //   createOrUpdatePropertyAction(formData, property?.id ?? '', true),
-        //   {
-        //     success: 'Imóvel atualizado com sucesso!',
-        //     error: 'Ocorreu um erro ao atualizar o imóvel.',
-        //   }
-        // )
+        toast.promise(
+          async () => {
+            await updateProperty(
+              { formData },
+              {
+                onSuccess: async (propertyUpdated) => {
+                  try {
+                    const newImages = imagesList.filter(image => !existingImages.some(img => img.url === URL.createObjectURL(image)))
+                    const imageUrls = await Promise.all(
+                      newImages.map(async (image) => await uploadPropertyImage(image, propertyUpdated.code))
+                    )
+
+                    const response = await fetch('/api/property/images', {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        propertyId: propertyUpdated.id,
+                        imageUrls: imageUrls.filter(url => !existingImages.some(img => img.url === url))
+                      })
+                    })
+
+                    if (!response.ok) {
+                      throw new Error('Erro ao salvar imagens no banco.')
+                    }
+
+                    revalidatePropertiesAction()
+                    router.push(`/dashboard/my-properties`)
+                  } catch (imageError) {
+                    console.error("Erro ao realizar o upload das imagens:", imageError);
+                  }
+                }
+              }
+            )
+          },
+          {
+            success: 'Imóvel atualizado com sucesso!',
+            error: e => e.message,
+          }
+        )
       } else {
         toast.promise(
           async () => {
-            const images = Array.from(data.images || [])
             await createProperty(
               { formData },
               {
                 onSuccess: async (propertyCreated) => {
                   try {
                     const imageUrls = await Promise.all(
-                      images.map(async (image) => await uploadPropertyImage(image, propertyCreated.id))
+                      imagesList.map(async (image) => await uploadPropertyImage(image, propertyCreated.code))
                     )
 
                     const response = await fetch('/api/property/images', {
@@ -183,6 +229,9 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
                     if (!response.ok) {
                       throw new Error('Erro ao salvar imagens no banco')
                     }
+
+                    revalidatePropertiesAction()
+                    router.push(`/dashboard/my-properties`)
                   } catch (imageError) {
                     console.error("Erro ao realizar o upload das imagens:", imageError);
                     await PropertyService.deleteProperty(propertyCreated.id);
@@ -243,12 +292,27 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     const images = Array.from(form.watch("images") || []);
     const urls = images.map(image => URL.createObjectURL(image));
     const allImages = [...existingImages.map(img => img.url), ...urls];
-    setImageUrls(allImages);
+    const uniqueImages = allImages.filter((url, index) => allImages.indexOf(url) === index);
+    setImageUrls(prev => {
+      if (!isEditing) {
+        return [...prev, ...uniqueImages]
+      }
+
+      return uniqueImages
+    });
+    setImagesList(prev => [...prev, ...images]);
+
 
     return () => {
       urls.forEach(url => URL.revokeObjectURL(url));
     };
   }, [form.watch("images"), existingImages]);
+
+  if (isCreatingProperty || isUpdatingProperty) {
+    return <div className="flex items-center justify-center h-screen">
+      <Loader2 className="w-10 h-10 animate-spin" />
+    </div>
+  }
 
   return (
     <Form {...form}>

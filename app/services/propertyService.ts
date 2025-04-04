@@ -201,7 +201,7 @@ export class PropertyService {
     return property;
   }
 
-  static async createOrUpdateProperty(formData: FormData, propertyId?: string, isUpdate?: boolean) {
+  static async createOrUpdateProperty(formData: FormData, code?: string, isUpdate?: boolean) {
     try {
       const entries = Array.from(formData.entries());
       const rawData = Object.fromEntries(entries) as unknown as Partial<PropertyFeatures> & NumericFields & BooleanFields;
@@ -221,19 +221,19 @@ export class PropertyService {
         [feature]: propertyFeatures.includes(feature)
       }), {}) as infrastructure;
 
-
-      const images = formData.getAll('images') as File[];
       if (isUpdate) {
         const property = await db.property.findUnique({
-          where: { id: propertyId },
+          where: { code },
         })
+
+        console.log('property', property)
 
         if (!property) {
           throw new PropertyHttpError('Imóvel não encontrado', 404);
         }
 
         await db.property.update({
-          where: { id: propertyId },
+          where: { code },
           data: {
             code: rawData.code!,
             title: rawData.title!,
@@ -262,28 +262,10 @@ export class PropertyService {
           throw new PropertyHttpError(`Erro ao atualizar imóvel no banco de dados`, 500);
         });
 
-        if (images.length > 0) {
-          const existingImages = formData.getAll('existingImages') as File[];
-          const imageAlreadyUploaded = existingImages.map(image => image.name);
-
-          const imagesToUpload = images.filter(image => !imageAlreadyUploaded.includes(image.name));
-
-          const uploadedImagesS3 = await Promise.all(
-            imagesToUpload.map(async (image) => {
-              const url = await uploadPropertyImage(image, property.id);
-              return { url, propertyId: property.id };
-            })
-          );
-
-          await db.image.createMany({
-            data: uploadedImagesS3
-          });
-
-          await db.infrastructure.update({
-            where: { propertyId: property.id },
-            data: infrastructureData
-          });
-        }
+        await db.infrastructure.update({
+          where: { propertyId: property.id },
+          data: infrastructureData
+        });
 
         return { success: true, data: property };
       }
@@ -318,7 +300,7 @@ export class PropertyService {
         if (error.code === 'P2002') {
           throw new PropertyHttpError('Já existe um imóvel com este código', 409);
         }
-        throw new PropertyHttpError(`Erro ao criar imóvel no banco de dados`, 500);
+        throw new PropertyHttpError(`Erro ao editar imóvel no banco de dados`, 500);
       });
 
       try {
