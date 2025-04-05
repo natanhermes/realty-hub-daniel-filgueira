@@ -37,12 +37,13 @@ export async function uploadPropertyMedia(file: File, propertyCode: string): Pro
   }
 }
 
-export async function deletePropertyMedia(propertyCode: string) {
+export async function deletePropertyMedia(propertyCode: string, mediaFile: boolean = false) {
   try {
     const prefix = propertyCode.startsWith('properties/')
       ? propertyCode
-      : `properties/${propertyCode}/`;
+      : `properties/${propertyCode}${mediaFile ? '' : '/'}`;
 
+    console.log('prefix', prefix)
     const response = await fetch('/api/upload/delete-media-aws', {
       method: 'DELETE',
       headers: {

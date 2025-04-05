@@ -17,6 +17,7 @@ import { useMutation } from "@tanstack/react-query";
 import { PropertyService } from "@/app/services/propertyService";
 import { deletePropertyMedia, uploadPropertyMedia } from "@/lib/s3";
 import { revalidatePropertiesAction } from "@/app/actions/revalidatePropertiesAction";
+import { ConfirmAction } from "./confirm-action";
 
 const ICONS_SIZE = 16
 
@@ -206,6 +207,27 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     }
   })
 
+  const { mutateAsync: deletePropertySingleMedia, isPending: isDeletingPropertyMedia } = useMutation({
+    mutationFn: async ({ id, code }: { id: string, code: string }) => {
+
+      const response = await fetch('/api/property/images', {
+        method: 'DELETE',
+        body: JSON.stringify({ id })
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.statusText || 'Erro ao deletar imóvel');
+      }
+
+      const urlToReplace = `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/properties/${code}/`;
+      await deletePropertyMedia(`${code}/${responseData.data.url.replace(urlToReplace, '')}`, true);
+
+      await revalidatePropertiesAction()
+    }
+  })
+
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
@@ -291,7 +313,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
         formData.append('existingMedia', JSON.stringify(existingMedia))
       }
 
-      if (selectedMedia.length === 0) {
+      if (!isEditing && selectedMedia.length === 0) {
         toast.error('Selecione pelo menos uma imagem ou vídeo')
         return
       }
@@ -340,8 +362,13 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     }
   };
 
-  const handleRemoveSelectedMedia = (index: number) => {
+  const handleRemoveSelectedMedia = (index: number, id?: string) => {
     setSelectedMedia(prev => prev.filter((_, i) => i !== index))
+
+    if (isEditing && id) {
+      deletePropertySingleMedia({ id: id, code: property?.code! })
+      setExistingMedia(prev => prev.filter((_, i) => i !== index))
+    }
   }
 
   const handleChangeStatus = async (code: string, isActive: boolean) => {
@@ -386,7 +413,8 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
       // Retorna um objeto com url e tipo
       return {
         url,
-        type: isVideo ? 'video' : 'image'
+        type: isVideo ? 'video' : 'image',
+        id: ''
       };
     });
 
@@ -395,7 +423,8 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
       ...(existingMedia.map(media => ({
         url: media.url,
         // Determinar o tipo baseado na extensão do arquivo
-        type: media.url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image'
+        type: media.url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image',
+        id: media.id
       }))),
       ...newUrls
     ];
@@ -406,7 +435,8 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
 
     setImageUrls(uniqueMedia.map(media => ({
       url: media.url,
-      type: media.type as 'video' | 'image'
+      type: media.type as 'video' | 'image',
+      id: media.id
     })));
 
     return () => {
@@ -414,7 +444,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     };
   }, [existingMedia, selectedMedia]);
 
-  if (isCreatingProperty || isUpdatingProperty || isDeletingProperty) {
+  if (isCreatingProperty || isUpdatingProperty || isDeletingProperty || isDeletingPropertyMedia) {
     return <div className="flex items-center justify-center h-screen w-full">
       <Loader2 className="w-10 h-10 animate-spin" />
     </div>
@@ -450,7 +480,12 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
             <div className="flex gap-2">
               {isEditing && (
                 <>
-                  <Button
+                  <ConfirmAction
+                    title="Apagar imóvel"
+                    description="Tem certeza que deseja apagar o imóvel?"
+                    onConfirm={() => handleDeleteProperty(property?.code!)}
+                  />
+                  {/* <Button
                     type="button"
                     variant={'destructive'}
                     className={`flex items-center gap-2 `}
@@ -458,7 +493,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
                   >
                     <Trash size={ICONS_SIZE} />
                     Apagar imóvel
-                  </Button>
+                  </Button> */}
                   <Button
                     type="button"
                     variant={'default'}

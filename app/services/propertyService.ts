@@ -370,4 +370,17 @@ export class PropertyService {
       return { success: false, error: 'Erro ao deletar propriedade', statusCode: 500 };
     }
   }
+
+  static async deletePropertyMedia(id: string) {
+    try {
+      const imageDeleted = await db.image.delete({
+        where: { id }
+      });
+
+      return { success: true, data: imageDeleted };
+    } catch (error) {
+      console.error('Erro ao deletar media:', error);
+      return { success: false, error: 'Erro ao deletar media', statusCode: 500 };
+    }
+  }
 }

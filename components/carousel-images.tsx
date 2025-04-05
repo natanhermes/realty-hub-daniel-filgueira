@@ -1,9 +1,7 @@
 import Image from "next/image";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
-import { Button } from "./ui/button";
-import { Trash } from "lucide-react";
-import { image } from "@prisma/client";
 import { useState, useEffect } from "react";
+import { ConfirmAction } from "./confirm-action";
 
 const ICONS_SIZE = 16
 
@@ -16,7 +14,7 @@ type MediaItem = {
 interface CarouselMediaProps {
   mediaItems: (MediaItem | string)[]
   showVideoControls?: boolean
-  handleRemoveSelectedMedia?: (index: number) => void
+  handleRemoveSelectedMedia?: (index: number, id?: string) => void
   autoplay?: boolean
   interval?: number
   onNavigate?: () => void
@@ -91,14 +89,29 @@ export function CarouselMedia({ mediaItems, handleRemoveSelectedMedia, showVideo
                 )}
               </div>
               {handleRemoveSelectedMedia && (
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="absolute bottom-0 sm:bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                  onClick={() => handleRemoveSelectedMedia(index)}
-                >
-                  <Trash size={ICONS_SIZE} />
-                </Button>
+                <div className="absolute bottom-0 sm:bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <ConfirmAction
+                    title="Apagar imagem"
+                    description={
+                      <span className="flex flex-col gap-6">
+                        <span>
+                          <span className="text-sm text-muted-foreground">Não será possível recuperar a imagem apagada.</span>
+                          <span className="text-sm text-muted-foreground">Tem certeza que deseja apagar?</span>
+                        </span>
+
+                        <span className="text-xs italic text-muted-foreground">Está ação não tem relação com a confirmação do formulário. Caso não tenha editado nenhuma informação, não há necessidade em salvar.</span>
+                      </span>
+                    }
+                    onConfirm={() => {
+                      if (typeof media === 'string') {
+                        handleRemoveSelectedMedia(index)
+                      } else {
+                        handleRemoveSelectedMedia(index, media.id)
+                      }
+                    }}
+                    onCancel={() => { }}
+                  />
+                </div>
               )}
             </div>
           </CarouselItem>
