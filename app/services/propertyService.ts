@@ -48,7 +48,8 @@ export class PropertyService {
   static async listHighlightedProperties() {
     const properties = await db.property.findMany({
       where: {
-        highlight: true
+        highlight: true,
+        active: true
       },
       include: {
         image: true,
