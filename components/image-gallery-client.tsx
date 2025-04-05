@@ -24,14 +24,18 @@ export const propertySchema = z.object({
   images: z.custom<FileList>().optional(),
   title: z.string().min(10, "O título está muito curto"),
   purpose: z.enum(["sale", "rent", "sale-rent", "daily"], {
-    required_error: "Selecione o tipo de contrato"
+    required_error: "Selecione o tipo de contrato",
+    invalid_type_error: "Selecione o tipo de contrato",
+    message: "Selecione o tipo de contrato"
   }),
   salePrice: z.number().optional(),
   rentalPrice: z.number().optional(),
   dailyPrice: z.number().optional(),
   code: z.string().min(1, "O código é obrigatório"),
   propertyType: z.enum(["apartment", "house", "commercial"], {
-    required_error: "Selecione o tipo do imóvel"
+    required_error: "Selecione o tipo do imóvel",
+    invalid_type_error: "Selecione o tipo do imóvel",
+    message: "Selecione o tipo do imóvel"
   }),
   neighborhood: z.string().min(1, "O bairro é obrigatório"),
   location: z.string().url("Digite uma URL válida").optional(),
@@ -158,6 +162,11 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
         formData.append('existingImages', JSON.stringify(existingImages))
       }
 
+      if (selectedImages.length === 0) {
+        toast.error('Selecione pelo menos uma imagem')
+        return
+      }
+
       Object.entries(data).forEach(([key, value]) => {
         if (key === 'images') return
         if (key === 'existingImages') return
@@ -276,7 +285,8 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
       error: 'Ocorreu um erro ao ativar o imóvel.',
     })
 
-    router.push('/dashboard/my-properties')
+    revalidatePropertiesAction()
+    router.push(`/dashboard/my-properties`)
   }
 
   const handleChangeHighlight = async (code: string) => {
@@ -288,7 +298,8 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
       error: 'Ocorreu um erro ao destacar o imóvel.',
     })
 
-    router.push('/dashboard/my-properties')
+    revalidatePropertiesAction()
+    router.push(`/dashboard/my-properties`)
   }
 
   const [selectedImages, setSelectedImages] = useState<File[]>([])
@@ -330,7 +341,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
   }, [existingImages, selectedImages]);
 
   if (isCreatingProperty || isUpdatingProperty) {
-    return <div className="flex items-center justify-center h-screen">
+    return <div className="flex items-center justify-center h-screen w-full">
       <Loader2 className="w-10 h-10 animate-spin" />
     </div>
   }
