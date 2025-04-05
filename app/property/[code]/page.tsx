@@ -60,22 +60,35 @@ export default function PropertyPage() {
 
           <Carousel className="w-full">
             <CarouselContent>
-              {property?.image.map((image: image) => (
-                <CarouselItem key={image.id}>
+              {property?.image.map((media: image) => (
+                <CarouselItem key={media.id}>
                   <div className="relative rounded-lg bg-gray-100 flex items-center justify-center">
                     <div className="w-full h-[20rem] md:h-[30rem] relative">
-                      <Image
-                        src={image.url}
-                        alt="Imagem da propriedade"
-                        fill
-                        className="object-contain"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="flex flex-col text-whiteIce/70 text-8xl">
-                          <span className="font-bombalurina">Daniel Filgueira</span>
-                        </div>
-                      </div>
+                      {media.type === 'video' ? (
+                        <video
+                          src={media.url}
+                          className="w-full h-full object-contain"
+                          controls
+                          controlsList="nodownload"
+                        >
+                          Seu navegador não suporta o elemento de vídeo.
+                        </video>
+                      ) : (
+                        <>
+                          <Image
+                            src={media.url}
+                            alt="Imagem da propriedade"
+                            fill
+                            className="object-contain"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div className="flex flex-col text-whiteIce/70 text-8xl">
+                              <span className="font-bombalurina">Daniel Filgueira</span>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </CarouselItem>
