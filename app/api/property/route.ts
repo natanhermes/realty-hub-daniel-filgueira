@@ -30,3 +30,26 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { code } = await request.json();
+
+    const response = await PropertyService.deleteProperty(code);
+
+    if (!response.success) {
+      return NextResponse.json(
+        { statusText: response.error },
+        { status: response.statusCode || 500 }
+      );
+    }
+
+    return NextResponse.json({ status: 200 });
+  } catch (error) {
+    console.error("Erro na rota DELETE /api/property:", error);
+    return NextResponse.json(
+      { statusText: "Erro interno do servidor" },
+      { status: 500 }
+    );
+  }
+}

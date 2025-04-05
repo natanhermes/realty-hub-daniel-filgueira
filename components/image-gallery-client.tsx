@@ -15,7 +15,7 @@ import { Property } from "@/types/Property";
 import { infrastructure } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { PropertyService } from "@/app/services/propertyService";
-import { uploadPropertyMedia } from "@/lib/s3";
+import { deletePropertyMedia, uploadPropertyMedia } from "@/lib/s3";
 import { revalidatePropertiesAction } from "@/app/actions/revalidatePropertiesAction";
 
 const ICONS_SIZE = 16
@@ -86,7 +86,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
   const router = useRouter()
   const [imageUrls, setImageUrls] = useState<Array<{ url: string; type: 'video' | 'image' }>>([]);
   const [existingMedia, setExistingMedia] = useState<{ id: string, url: string }[]>(property?.image || []);
-  const [selectedMedia, setSelectedMedia] = useState<File[]>([])
+  const [selectedMedia, setSelectedMedia] = useState<File[]>([]);
 
   const { mutateAsync: createProperty, isPending: isCreatingProperty } = useMutation({
     mutationFn: async ({ formData }: { formData: FormData }) => {
@@ -99,6 +99,36 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
 
       if (!response.ok) {
         throw new Error(responseData.statusText || 'Erro ao criar imóvel');
+      }
+
+      try {
+        const mediaUrls = await Promise.all(
+          selectedMedia.map(async (file) => {
+            const url = await uploadPropertyMedia(file, responseData.code);
+            return {
+              url,
+              type: ALLOWED_MEDIA_TYPES.video.includes(file.type) ? 'video' : 'image'
+            };
+          })
+        );
+
+        const response = await fetch('/api/property/images', {
+          method: 'POST',
+          body: JSON.stringify({
+            propertyId: responseData.id,
+            mediaItems: mediaUrls
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao salvar mídia no banco')
+        }
+
+        await revalidatePropertiesAction()
+        router.push(`/dashboard/my-properties`)
+      } catch (error) {
+        console.error("Erro ao realizar o upload da mídia:", error);
+        await PropertyService.deleteProperty(responseData.id);
       }
 
       return responseData;
@@ -118,9 +148,63 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
         throw new Error(responseData.statusText || 'Erro ao editar imóvel');
       }
 
+      try {
+        const newMedia = selectedMedia.filter(
+          media => !existingMedia.some(img => img.url === URL.createObjectURL(media))
+        )
+
+        const mediaUrls = await Promise.all(
+          newMedia.map(async (file) => {
+            const url = await uploadPropertyMedia(file, responseData.code);
+            return {
+              url,
+              type: ALLOWED_MEDIA_TYPES.video.includes(file.type) ? 'video' : 'image'
+            };
+          })
+        );
+
+        const response = await fetch('/api/property/images', {
+          method: 'POST',
+          body: JSON.stringify({
+            propertyId: responseData.id,
+            mediaItems: mediaUrls
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao salvar mídia no banco.')
+        }
+
+        await revalidatePropertiesAction()
+        router.push(`/dashboard/my-properties`)
+      } catch (error) {
+        console.error("Erro ao realizar o upload da mídia:", error);
+      }
+
       return responseData;
     }
   });
+
+  const { mutateAsync: deleteProperty, isPending: isDeletingProperty } = useMutation({
+    mutationFn: async ({ code }: { code: string }) => {
+
+      const response = await fetch('/api/property', {
+        method: 'DELETE',
+        body: JSON.stringify({ code })
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.statusText || 'Erro ao deletar imóvel');
+      }
+
+      await deletePropertyMedia(code);
+
+      await revalidatePropertiesAction()
+      router.push(`/dashboard/my-properties`)
+    }
+  })
 
   const form = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema),
@@ -229,46 +313,11 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
           async () => {
             await updateProperty(
               { formData },
-              {
-                onSuccess: async (propertyUpdated) => {
-                  try {
-                    const newMedia = selectedMedia.filter(
-                      media => !existingMedia.some(img => img.url === URL.createObjectURL(media))
-                    )
-
-                    const mediaUrls = await Promise.all(
-                      newMedia.map(async (file) => {
-                        const url = await uploadPropertyMedia(file, propertyUpdated.code);
-                        return {
-                          url,
-                          type: ALLOWED_MEDIA_TYPES.video.includes(file.type) ? 'video' : 'image'
-                        };
-                      })
-                    );
-
-                    const response = await fetch('/api/property/images', {
-                      method: 'POST',
-                      body: JSON.stringify({
-                        propertyId: propertyUpdated.id,
-                        mediaItems: mediaUrls
-                      })
-                    });
-
-                    if (!response.ok) {
-                      throw new Error('Erro ao salvar mídia no banco.')
-                    }
-
-                    revalidatePropertiesAction()
-                    router.push(`/dashboard/my-properties`)
-                  } catch (error) {
-                    console.error("Erro ao realizar o upload da mídia:", error);
-                  }
-                }
-              }
             )
           },
           {
             success: 'Imóvel atualizado com sucesso!',
+            loading: 'Atualizando imóvel...',
             error: e => e.message,
           }
         )
@@ -276,44 +325,12 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
         toast.promise(
           async () => {
             await createProperty(
-              { formData },
-              {
-                onSuccess: async (propertyCreated) => {
-                  try {
-                    const mediaUrls = await Promise.all(
-                      selectedMedia.map(async (file) => {
-                        const url = await uploadPropertyMedia(file, propertyCreated.code);
-                        return {
-                          url,
-                          type: ALLOWED_MEDIA_TYPES.video.includes(file.type) ? 'video' : 'image'
-                        };
-                      })
-                    );
-
-                    const response = await fetch('/api/property/images', {
-                      method: 'POST',
-                      body: JSON.stringify({
-                        propertyId: propertyCreated.id,
-                        mediaItems: mediaUrls
-                      })
-                    });
-
-                    if (!response.ok) {
-                      throw new Error('Erro ao salvar mídia no banco')
-                    }
-
-                    revalidatePropertiesAction()
-                    router.push(`/dashboard/my-properties`)
-                  } catch (error) {
-                    console.error("Erro ao realizar o upload da mídia:", error);
-                    await PropertyService.deleteProperty(propertyCreated.id);
-                  }
-                }
-              }
+              { formData }
             )
           },
           {
             success: 'Imóvel cadastrado com sucesso!',
+            loading: 'Cadastrando imóvel...',
             error: e => e.message,
           }
         )
@@ -324,29 +341,28 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
   };
 
   const handleRemoveSelectedMedia = (index: number) => {
-    // if (index < existingMedia.length) {
-    //   setExistingMedia(prev => prev.filter((_, i) => i !== index))
-    // } else {
-    //   const newIndex = index - existingMedia.length
-    //   const updatedMedia = Array.from(form.watch("media")!)
-    //     .filter((_, i) => i !== newIndex);
-    //   // const dt = new DataTransfer();
-    //   // updatedMedia.forEach(file => dt.items.add(file));
-    //   // form.setValue("media", dt.files);
-    // }
+    setSelectedMedia(prev => prev.filter((_, i) => i !== index))
   }
 
-  const handleChangeStatus = async (code: string) => {
+  const handleChangeStatus = async (code: string, isActive: boolean) => {
     toast.promise(fetch(`/api/property/change-status/${code}`, {
       method: 'PUT',
       body: JSON.stringify({ code })
     }), {
-      success: 'Imóvel ativado com sucesso!',
+      success: `Imóvel ${isActive ? 'ativado' : 'inativado'} com sucesso!`,
       error: 'Ocorreu um erro ao ativar o imóvel.',
     })
 
     revalidatePropertiesAction()
     router.push(`/dashboard/my-properties`)
+  }
+
+  const handleDeleteProperty = async (code: string) => {
+    toast.promise(deleteProperty({ code }), {
+      success: 'Imóvel deletado com sucesso!',
+      loading: 'Deletando imóvel...',
+      error: 'Ocorreu um erro ao deletar o imóvel.',
+    })
   }
 
   const handleChangeHighlight = async (code: string) => {
@@ -361,29 +377,6 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     revalidatePropertiesAction()
     router.push(`/dashboard/my-properties`)
   }
-
-  // const handleOnChangeImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = e.target.files;
-  //   if (!files) {
-  //     toast.warning('Nenhuma imagem selecionada')
-  //     return
-  //   }
-
-  //   const newImages = Array.from(files).filter(file => file.size > 0)
-  //   if (newImages.length === 0) {
-  //     toast.warning('Nenhuma imagem selecionada')
-  //     return
-  //   }
-
-  //   const newImagesWithoutFileSelected = newImages.filter(image => !selectedMedia.some(selectedImage => selectedImage.name === image.name))
-
-  //   const updatedFiles = [...selectedMedia, ...newImagesWithoutFileSelected];
-  //   setSelectedMedia(updatedFiles)
-
-  //   // const dt = new DataTransfer();
-  //   // updatedFiles.forEach(file => dt.items.add(file));
-  //   // form.setValue("images", dt.files);
-  // }
 
   useEffect(() => {
     const newUrls = selectedMedia.map(file => {
@@ -459,9 +452,18 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
                 <>
                   <Button
                     type="button"
-                    variant={property?.active ? "destructive" : "default"}
+                    variant={'destructive'}
                     className={`flex items-center gap-2 `}
-                    onClick={() => handleChangeStatus(property?.code!)}
+                    onClick={() => handleDeleteProperty(property?.code!)}
+                  >
+                    <Trash size={ICONS_SIZE} />
+                    Apagar imóvel
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={'default'}
+                    className={`flex items-center gap-2 `}
+                    onClick={() => handleChangeStatus(property?.code!, property?.active!)}
                   >
                     {property?.active ? (
                       <>

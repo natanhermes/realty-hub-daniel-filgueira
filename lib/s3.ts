@@ -36,3 +36,30 @@ export async function uploadPropertyMedia(file: File, propertyCode: string): Pro
     throw error;
   }
 }
+
+export async function deletePropertyMedia(propertyCode: string) {
+  try {
+    const prefix = propertyCode.startsWith('properties/')
+      ? propertyCode
+      : `properties/${propertyCode}/`;
+
+    const response = await fetch('/api/upload/delete-media-aws', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        prefix
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Falha ao deletar os arquivos');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Erro no delete:', error);
+    throw error;
+  }
+}

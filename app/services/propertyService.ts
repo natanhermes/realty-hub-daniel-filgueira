@@ -350,9 +350,24 @@ export class PropertyService {
     }
   }
 
-  static async deleteProperty(propertyId: string) {
-    await db.property.delete({
-      where: { id: propertyId }
-    });
+  static async deleteProperty(code: string) {
+    try {
+      const property = await db.property.findUnique({
+        where: { code }
+      });
+
+      if (!property) {
+        throw new PropertyHttpError('Imóvel não encontrado.', 404);
+      }
+
+      await db.property.delete({
+        where: { id: property.id }
+      });
+
+      return { success: true };
+    } catch (error) {
+      console.error('Erro ao deletar propriedade:', error);
+      return { success: false, error: 'Erro ao deletar propriedade', statusCode: 500 };
+    }
   }
 }
