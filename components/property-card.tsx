@@ -5,7 +5,7 @@ import { Card, CardContent } from "./ui/card";
 
 import Image from "next/image";
 import { Property } from "@/types/Property";
-import { CarouselImages } from "./carousel-images";
+import { CarouselMedia } from "./carousel-images";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -18,11 +18,18 @@ export function PropertyCard({ property, isAdmin = false }: { property: Property
   const router = useRouter()
 
   return (
-
     <Card className={cn("max-w-[24rem] md:max-w-[20rem] lg:max-w-[20rem] w-full flex flex-col cursor-pointer hover:scale-105 hover:shadow-lg transition-all duration-300", {
       "opacity-50": !property.active
     })}>
-      <CarouselImages imageUrls={property.image} onNavigate={() => router.push(`${isAdmin ? `/dashboard/my-properties/${property.code}` : `/property/${property.code}`}`)} />
+      <CarouselMedia
+        mediaItems={property.image.map(media => ({
+          id: media.id,
+          url: media.url,
+          type: media.url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image'
+        }))}
+        showVideoControls={false}
+        onNavigate={() => router.push(`${isAdmin ? `/dashboard/my-properties/${property.code}` : `/property/${property.code}`}`)}
+      />
 
       <CardContent className="w-full relative py-4">
         {!isAdmin && (

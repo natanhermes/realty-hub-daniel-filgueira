@@ -1,38 +1,38 @@
-export async function uploadPropertyImage(image: File, code: string) {
+export async function uploadPropertyMedia(file: File, propertyCode: string): Promise<string> {
   try {
-    if (!image) {
-      throw new Error('Arquivo não fornecido');
-    }
+    const fileName = `${propertyCode}-${Date.now()}-${file.name}`;
+    const fileType = file.type;
 
-    if (!code) {
-      throw new Error('Código do imóvel não fornecido');
-    }
-
-    const presignedUrlResponse = await fetch('/api/upload/presigned-url-aws', {
+    const response = await fetch('/api/upload/presigned-url-aws', {
       method: 'POST',
       body: JSON.stringify({
-        fileName: image.name,
-        fileType: image.type,
-        code
+        fileName,
+        fileType,
+        code: propertyCode
       })
-    })
+    });
 
-    const { url, key } = await presignedUrlResponse.json()
-
-    await fetch(url, {
-      method: 'PUT',
-      body: image,
-      headers: {
-        'Content-Type': image.type
-      }
-    })
-
-    return `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${key}`
-
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Erro ao realizar upload da imagem: ${error.message}`);
+    if (!response.ok) {
+      throw new Error('Falha ao obter URL de upload');
     }
-    throw new Error('Erro desconhecido ao realizar upload da imagem');
+
+    const { url, key } = await response.json();
+
+    const uploadResponse = await fetch(url, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': fileType
+      }
+    });
+
+    if (!uploadResponse.ok) {
+      throw new Error('Falha ao fazer upload do arquivo');
+    }
+
+    return `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/${key}`;
+  } catch (error) {
+    console.error('Erro no upload:', error);
+    throw error;
   }
 }

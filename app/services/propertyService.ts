@@ -5,7 +5,6 @@ import { PropertyValidationError } from "../errors/property-validation-error";
 import { parseBooleanValue, parseNumericValue, validateRequiredFields } from "@/lib/utils";
 import { validateNumericValues } from "@/lib/utils";
 import { infrastructure } from "@prisma/client";
-import { uploadPropertyImage } from "@/lib/s3";
 
 interface PaginatedResponse {
   items: Property[];
@@ -39,6 +38,9 @@ export class PropertyService {
         image: true,
         infrastructure: true,
       },
+      orderBy: {
+        updatedAt: 'desc'
+      }
     });
     return properties;
   }
@@ -52,6 +54,9 @@ export class PropertyService {
         image: true,
         infrastructure: true,
       },
+      orderBy: {
+        updatedAt: 'desc'
+      }
     });
     return properties;
   }
@@ -177,6 +182,9 @@ export class PropertyService {
         include: {
           image: true,
           infrastructure: true,
+        },
+        orderBy: {
+          createdAt: 'desc'
         }
       }),
       db.property.count({ where: { ...where, active: true } })

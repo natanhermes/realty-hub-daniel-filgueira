@@ -10,12 +10,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormItem } from "./ui/form";
 import { toast } from "sonner"
-import { CarouselImages } from "./carousel-images";
+import { CarouselMedia } from "./carousel-images";
 import { Property } from "@/types/Property";
 import { infrastructure } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { PropertyService } from "@/app/services/propertyService";
-import { uploadPropertyImage } from "@/lib/s3";
+import { uploadPropertyMedia } from "@/lib/s3";
 import { revalidatePropertiesAction } from "@/app/actions/revalidatePropertiesAction";
 
 const ICONS_SIZE = 16
@@ -84,8 +84,9 @@ export type PropertyFormData = z.infer<typeof propertySchema>;
 export function ImageGalleryClient({ property, isEditing = false }: { property?: Property, isEditing?: boolean }) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [existingImages, setExistingImages] = useState<{ id: string, url: string }[]>(property?.image || []);
+  const [imageUrls, setImageUrls] = useState<Array<{ url: string; type: 'video' | 'image' }>>([]);
+  const [existingMedia, setExistingMedia] = useState<{ id: string, url: string }[]>(property?.image || []);
+  const [selectedMedia, setSelectedMedia] = useState<File[]>([])
 
   const { mutateAsync: createProperty, isPending: isCreatingProperty } = useMutation({
     mutationFn: async ({ formData }: { formData: FormData }) => {
@@ -154,22 +155,66 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     }
   });
 
+  const ALLOWED_MEDIA_TYPES = {
+    image: ['image/jpeg', 'image/png', 'image/jpg', 'image/heic'],
+    video: ['video/mp4', 'video/webm', 'video/ogg']
+  };
+  const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB
+
+  const handleOnChangeMedia = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) {
+      toast.warning('Nenhum arquivo selecionado')
+      return
+    }
+
+    const newFiles = Array.from(files).filter(file => {
+      const isValidImage = ALLOWED_MEDIA_TYPES.image.includes(file.type);
+      const isValidVideo = ALLOWED_MEDIA_TYPES.video.includes(file.type);
+
+      if (!isValidImage && !isValidVideo) {
+        toast.error(`Tipo de arquivo não suportado: ${file.type}`);
+        return false;
+      }
+
+      if (isValidVideo && file.size > MAX_VIDEO_SIZE) {
+        toast.error(`O vídeo é muito grande. Tamanho máximo: 100MB`);
+        return false;
+      }
+
+      return file.size > 0;
+    });
+
+    if (newFiles.length === 0) {
+      toast.warning('Nenhum arquivo válido selecionado')
+      return
+    }
+
+    const newFilesWithoutSelected = newFiles.filter(
+      file => !selectedMedia.some(selected => selected.name === file.name)
+    );
+
+    const updatedFiles = [...selectedMedia, ...newFilesWithoutSelected];
+    console.log('updatedFiles', updatedFiles)
+    setSelectedMedia(updatedFiles);
+  }
+
   const onSubmit = async (data: PropertyFormData): Promise<void> => {
     try {
       const formData = new FormData()
 
       if (isEditing) {
-        formData.append('existingImages', JSON.stringify(existingImages))
+        formData.append('existingMedia', JSON.stringify(existingMedia))
       }
 
-      if (selectedImages.length === 0) {
-        toast.error('Selecione pelo menos uma imagem')
+      if (selectedMedia.length === 0) {
+        toast.error('Selecione pelo menos uma imagem ou vídeo')
         return
       }
 
       Object.entries(data).forEach(([key, value]) => {
         if (key === 'images') return
-        if (key === 'existingImages') return
+        if (key === 'existingMedia') return
         if (value === undefined || value === null) return
         if (key === "propertyFeatures" && Array.isArray(value)) {
           formData.append(key, JSON.stringify(value))
@@ -187,27 +232,36 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
               {
                 onSuccess: async (propertyUpdated) => {
                   try {
-                    const newImages = selectedImages.filter(image => !existingImages.some(img => img.url === URL.createObjectURL(image)))
-                    const imageUrls = await Promise.all(
-                      newImages.map(async (image) => await uploadPropertyImage(image, propertyUpdated.code))
+                    const newMedia = selectedMedia.filter(
+                      media => !existingMedia.some(img => img.url === URL.createObjectURL(media))
                     )
+
+                    const mediaUrls = await Promise.all(
+                      newMedia.map(async (file) => {
+                        const url = await uploadPropertyMedia(file, propertyUpdated.code);
+                        return {
+                          url,
+                          type: ALLOWED_MEDIA_TYPES.video.includes(file.type) ? 'video' : 'image'
+                        };
+                      })
+                    );
 
                     const response = await fetch('/api/property/images', {
                       method: 'POST',
                       body: JSON.stringify({
                         propertyId: propertyUpdated.id,
-                        imageUrls: imageUrls.filter(url => !existingImages.some(img => img.url === url))
+                        mediaItems: mediaUrls
                       })
-                    })
+                    });
 
                     if (!response.ok) {
-                      throw new Error('Erro ao salvar imagens no banco.')
+                      throw new Error('Erro ao salvar mídia no banco.')
                     }
 
                     revalidatePropertiesAction()
                     router.push(`/dashboard/my-properties`)
-                  } catch (imageError) {
-                    console.error("Erro ao realizar o upload das imagens:", imageError);
+                  } catch (error) {
+                    console.error("Erro ao realizar o upload da mídia:", error);
                   }
                 }
               }
@@ -226,26 +280,32 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
               {
                 onSuccess: async (propertyCreated) => {
                   try {
-                    const imageUrls = await Promise.all(
-                      selectedImages.map(async (image) => await uploadPropertyImage(image, propertyCreated.code))
-                    )
+                    const mediaUrls = await Promise.all(
+                      selectedMedia.map(async (file) => {
+                        const url = await uploadPropertyMedia(file, propertyCreated.code);
+                        return {
+                          url,
+                          type: ALLOWED_MEDIA_TYPES.video.includes(file.type) ? 'video' : 'image'
+                        };
+                      })
+                    );
 
                     const response = await fetch('/api/property/images', {
                       method: 'POST',
                       body: JSON.stringify({
                         propertyId: propertyCreated.id,
-                        imageUrls
+                        mediaItems: mediaUrls
                       })
-                    })
+                    });
 
                     if (!response.ok) {
-                      throw new Error('Erro ao salvar imagens no banco')
+                      throw new Error('Erro ao salvar mídia no banco')
                     }
 
                     revalidatePropertiesAction()
                     router.push(`/dashboard/my-properties`)
-                  } catch (imageError) {
-                    console.error("Erro ao realizar o upload das imagens:", imageError);
+                  } catch (error) {
+                    console.error("Erro ao realizar o upload da mídia:", error);
                     await PropertyService.deleteProperty(propertyCreated.id);
                   }
                 }
@@ -263,17 +323,17 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     }
   };
 
-  const handleRemoveSelectedImage = (index: number) => {
-    if (index < existingImages.length) {
-      setExistingImages(prev => prev.filter((_, i) => i !== index))
-    } else {
-      const newIndex = index - existingImages.length
-      const updatedImages = Array.from(form.watch("images")!)
-        .filter((_, i) => i !== newIndex);
-      const dt = new DataTransfer();
-      updatedImages.forEach(file => dt.items.add(file));
-      form.setValue("images", dt.files);
-    }
+  const handleRemoveSelectedMedia = (index: number) => {
+    // if (index < existingMedia.length) {
+    //   setExistingMedia(prev => prev.filter((_, i) => i !== index))
+    // } else {
+    //   const newIndex = index - existingMedia.length
+    //   const updatedMedia = Array.from(form.watch("media")!)
+    //     .filter((_, i) => i !== newIndex);
+    //   // const dt = new DataTransfer();
+    //   // updatedMedia.forEach(file => dt.items.add(file));
+    //   // form.setValue("media", dt.files);
+    // }
   }
 
   const handleChangeStatus = async (code: string) => {
@@ -302,43 +362,64 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     router.push(`/dashboard/my-properties`)
   }
 
-  const [selectedImages, setSelectedImages] = useState<File[]>([])
-  const handleOnChangeImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) {
-      toast.warning('Nenhuma imagem selecionada')
-      return
-    }
+  // const handleOnChangeImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = e.target.files;
+  //   if (!files) {
+  //     toast.warning('Nenhuma imagem selecionada')
+  //     return
+  //   }
 
-    const newImages = Array.from(files).filter(file => file.size > 0)
-    if (newImages.length === 0) {
-      toast.warning('Nenhuma imagem selecionada')
-      return
-    }
+  //   const newImages = Array.from(files).filter(file => file.size > 0)
+  //   if (newImages.length === 0) {
+  //     toast.warning('Nenhuma imagem selecionada')
+  //     return
+  //   }
 
-    const newImagesWithoutFileSelected = newImages.filter(image => !selectedImages.some(selectedImage => selectedImage.name === image.name))
+  //   const newImagesWithoutFileSelected = newImages.filter(image => !selectedMedia.some(selectedImage => selectedImage.name === image.name))
 
-    const updatedFiles = [...selectedImages, ...newImagesWithoutFileSelected];
-    setSelectedImages(updatedFiles)
+  //   const updatedFiles = [...selectedMedia, ...newImagesWithoutFileSelected];
+  //   setSelectedMedia(updatedFiles)
 
-    // const dt = new DataTransfer();
-    // updatedFiles.forEach(file => dt.items.add(file));
-    // form.setValue("images", dt.files);
-  }
+  //   // const dt = new DataTransfer();
+  //   // updatedFiles.forEach(file => dt.items.add(file));
+  //   // form.setValue("images", dt.files);
+  // }
 
   useEffect(() => {
-    const newUrls = selectedImages.map(image => URL.createObjectURL(image));
+    const newUrls = selectedMedia.map(file => {
+      const isVideo = ALLOWED_MEDIA_TYPES.video.includes(file.type);
+      const url = URL.createObjectURL(file);
 
-    const allImages = [...(existingImages.map(img => img.url)), ...newUrls];
+      // Retorna um objeto com url e tipo
+      return {
+        url,
+        type: isVideo ? 'video' : 'image'
+      };
+    });
 
-    const uniqueImages = allImages.filter((url, index) => allImages.indexOf(url) === index);
+    const allMedia = [
+      // Converter mídia existente para o mesmo formato
+      ...(existingMedia.map(media => ({
+        url: media.url,
+        // Determinar o tipo baseado na extensão do arquivo
+        type: media.url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image'
+      }))),
+      ...newUrls
+    ];
 
-    setImageUrls(uniqueImages);
+    const uniqueMedia = allMedia.filter((media, index) =>
+      allMedia.findIndex(m => m.url === media.url) === index
+    );
+
+    setImageUrls(uniqueMedia.map(media => ({
+      url: media.url,
+      type: media.type as 'video' | 'image'
+    })));
 
     return () => {
-      newUrls.forEach(url => URL.revokeObjectURL(url));
+      newUrls.forEach(media => URL.revokeObjectURL(media.url));
     };
-  }, [existingImages, selectedImages]);
+  }, [existingMedia, selectedMedia]);
 
   if (isCreatingProperty || isUpdatingProperty) {
     return <div className="flex items-center justify-center h-screen w-full">
@@ -365,11 +446,11 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
                 <Input
                   ref={fileInputRef}
                   type="file"
-                  id="image"
+                  id="media"
                   className="hidden"
-                  onChange={handleOnChangeImages}
+                  onChange={handleOnChangeMedia}
                   multiple
-                  accept="image/jpeg,image/png,image/jpg,image/heic"
+                  accept={[...ALLOWED_MEDIA_TYPES.image, ...ALLOWED_MEDIA_TYPES.video].join(',')}
                 />
               </FormControl>
             </FormItem>
@@ -423,19 +504,19 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
                 onClick={() => fileInputRef.current?.click()}
               >
                 <ImageUp size={ICONS_SIZE} />
-                Adicionar imagem
+                Adicionar mídia
               </Button>
             </div>
           </div>
           {imageUrls.length > 0 ? (
-            <CarouselImages
-              imageUrls={imageUrls}
-              handleRemoveSelectedImage={handleRemoveSelectedImage}
+            <CarouselMedia
+              mediaItems={imageUrls}
+              handleRemoveSelectedMedia={handleRemoveSelectedMedia}
             />
           ) : (
             <div className="w-full">
               <div className="w-full h-[280px] bg-white rounded-lg flex items-center justify-center">
-                <p className="text-sm text-gray-500 italic">Nenhuma imagem selecionada</p>
+                <p className="text-sm text-gray-500 italic">Nenhuma mídia selecionada</p>
               </div>
 
               <p
