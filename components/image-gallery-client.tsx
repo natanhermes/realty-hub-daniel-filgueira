@@ -414,7 +414,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     };
   }, [existingMedia, selectedMedia]);
 
-  if (isCreatingProperty || isUpdatingProperty) {
+  if (isCreatingProperty || isUpdatingProperty || isDeletingProperty) {
     return <div className="flex items-center justify-center h-screen w-full">
       <Loader2 className="w-10 h-10 animate-spin" />
     </div>
