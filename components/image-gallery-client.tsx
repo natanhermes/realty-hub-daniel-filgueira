@@ -33,7 +33,7 @@ export const propertySchema = z.object({
   rentalPrice: z.number().optional(),
   dailyPrice: z.number().optional(),
   code: z.string().min(1, "O código é obrigatório"),
-  propertyType: z.enum(["apartment", "house", "commercial"], {
+  propertyType: z.enum(["apartment", "house", "commercial", "lot"], {
     required_error: "Selecione o tipo do imóvel",
     invalid_type_error: "Selecione o tipo do imóvel",
     message: "Selecione o tipo do imóvel"
@@ -233,7 +233,7 @@ export function ImageGalleryClient({ property, isEditing = false }: { property?:
     defaultValues: {
       title: property?.title || '',
       code: property?.code || '',
-      propertyType: property?.propertyType as "apartment" | "house" | "commercial" || '',
+      propertyType: property?.propertyType as "apartment" | "house" | "commercial" | "lot" || '',
       purpose: property?.purpose as "sale" | "rent" | "sale-rent" | "daily" || '',
       neighborhood: property?.neighborhood || '',
       salePrice: property?.salePrice || 0,

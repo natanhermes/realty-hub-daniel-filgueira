@@ -100,6 +100,7 @@ export function PropertyFormClient({ form, isEditing = false }: PropertyFormClie
                     <SelectItem value="apartment">Apartamento</SelectItem>
                     <SelectItem value="house">Casa</SelectItem>
                     <SelectItem value="commercial">Comercial</SelectItem>
+                    <SelectItem value="lot">Loteamento</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />

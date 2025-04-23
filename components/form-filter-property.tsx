@@ -137,7 +137,7 @@ export function FormFilterProperty({ form, isDesktop = false }: { form: UseFormR
                     <SelectItem value="apartment">Apartamento</SelectItem>
                     <SelectItem value="house">Casa</SelectItem>
                     <SelectItem value="commercial">Comercial</SelectItem>
-                    {/* <SelectItem value="land">Terreno</SelectItem> */}
+                    <SelectItem value="lot">Loteamento</SelectItem>
                   </SelectContent>
                 </Select>
               </FormItem>
