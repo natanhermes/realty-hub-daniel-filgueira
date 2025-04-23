@@ -12,6 +12,7 @@ import { PaginationComponent } from './pagination-component'
 import { Button } from './ui/button'
 import { FiltersDrawer } from './filters-drawer'
 import { FloatingButton } from './floating-button'
+import { PropertyCardSkeleton } from './propery-card-skeleton'
 
 interface PaginationParams {
   page: number
@@ -111,8 +112,9 @@ export function SearchClientLayout() {
   return (
     <main className="relative min-h-screen">
       <FloatingButton onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou vindo do site. Sou cliente e gostaria de mais informações.`, '_blank')} />
-      <div className="relative h-[80vh] flex items-center pb-4 px-2 md:px-10">
+      <div className="relative h-[70vh]">
         <div className="absolute inset-0 bg-black/40 z-10" />
+
         <div className="absolute inset-0">
           {backgroundImages.map((image, index) => (
             <Image
@@ -142,26 +144,28 @@ export function SearchClientLayout() {
 
           </div>
         </div>
+
       </div>
 
       {isLoading ? (
-        <div className='flex justify-center items-center h-[50vh] w-2/4 mx-auto'>
-          <LucideLoader2 className='animate-spin text-gray-500' />
-        </div>
+        <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:justify-items-center p-4'>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <PropertyCardSkeleton key={index} />
+          ))}
+        </section>
       ) : properties.length > 0 ? (
-        <>
-          <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:justify-items-center p-4'>
-            {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
-          </section>
+        <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:justify-items-center p-4'>
+          {properties.map((property) => (
+            <PropertyCard key={property.id} property={property} />
+          ))}
           <PaginationComponent totalPages={totalPages} currentPage={pagination.page} onPageChange={handlePageChange} />
-        </>
+        </section>
       ) : (
-        <div className='flex justify-center items-center h-[50vh] w-2/4 mx-auto'>
+        <div className='flex justify-center items-center h-[50vh] w-full mx-auto'>
           <p className='text-gray-500'>Nenhum imóvel encontrado.</p>
         </div>
       )}
+
 
       <section className="w-full mt-4 bg-gray-100">
         <div className="container mx-auto max-w-3xl text-gray-600 text-center py-10 px-4">
