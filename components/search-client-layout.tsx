@@ -28,6 +28,8 @@ const backgroundImage = `https://d1jn39u3umq5qg.cloudfront.net/static-images/apa
 
 export function SearchClientLayout() {
   const [properties, setProperties] = useState<Property[]>([])
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const [pagination, setPagination] = useState<PaginationParams>({
     page: 1,
     limit: 10
@@ -47,6 +49,12 @@ export function SearchClientLayout() {
       page: 1
     }
   })
+  const backgroundImages = [
+    `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static-images/sao-miguel.png`,
+    `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static-images/praia-da-pipa.jpg`,
+    `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static-images/morro-do-careca.png`,
+    `${process.env.NEXT_PUBLIC_AWS_CLOUDFRONT_URL}/static-images/arena-das-dunas.jpg`,
+  ];
 
   const filters = useWatch({
     control: form.control
@@ -90,31 +98,49 @@ export function SearchClientLayout() {
     setPagination(prev => ({ ...prev, page: newPage }))
   }
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === backgroundImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <main className="relative min-h-screen">
       <FloatingButton onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou vindo do site. Sou cliente e gostaria de mais informações.`, '_blank')} />
-      <div className="relative h-[80vh] lg:h-[60vh] flex items-center pb-4 px-2 md:px-10">
+      <div className="relative h-[80vh] flex items-center pb-4 px-2 md:px-10">
         <div className="absolute inset-0 bg-black/40 z-10" />
         <div className="absolute inset-0">
-          <Image
-            src={backgroundImage}
-            alt="Background"
-            fill
-            className="object-cover"
-            priority
-          />
+          {backgroundImages.map((image, index) => (
+            <Image
+              key={index}
+              src={image}
+              alt={`Background ${index + 1}`}
+              fill
+              className={` transition-opacity grayscale duration-1000 ${currentImageIndex === index ? 'opacity-100' : 'opacity-0'
+                }`}
+              priority={index === 0}
+            />
+          ))}
         </div>
 
-        <div className="relative z-10">
-          <div className='flex flex-col mb-10 gap-2'>
-            <div className='flex flex-col text-xl sm:text-4xl lg:text-5xl font-bold text-gray-200 '>
-              <p>Encontre o lar dos</p>
-              <p>seus sonhos com facilidade.</p>
+        <div className="relative z-20">
+          <div className="container mx-auto px-4 md:px-16">
+            <div className="flex flex-col items-start justify-center h-[60vh]">
+              <div className="font-bold mb-8 max-w-3xl text-whiteIce">
+                <div className="flex flex-col text-left text-xl sm:text-4xl lg:text-5xl">
+                  <p>Encontre o lar dos</p>
+                  <p>seus sonhos com facilidade.</p>
+                </div>
+                <p className='text-left font-semibold text-xs sm:text-sm md:text-xl lg:text-2xl mt-4 '>Use nossos filtros para personalizar sua busca e descubra o imóvel perfeito para você!</p>
+              </div>
+              <FiltersDrawer form={form} />
             </div>
 
-            <p className='text-gray-200 text-xs sm:text-sm md:text-xl lg:text-2xl'>Use nossos filtros para personalizar sua busca e descubra o imóvel perfeito para você!</p>
           </div>
-          <FiltersDrawer form={form} />
         </div>
       </div>
 
