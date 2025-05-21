@@ -1,7 +1,6 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import wppIcon from '@/app/assets/wpp.svg'
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 
@@ -29,7 +28,7 @@ export default function ParaCorretor() {
             onClick={() => window.open('https://wa.me/558496703029?text=Olá! Sou corretor e gostaria de saber mais informações.')}
           >
             Mais informações
-            <Image src={wppIcon} alt="WhatsApp" className='w-6 h-6 ml-2' />
+            <Image src="/assets/wpp.svg" alt="WhatsApp" className='w-6 h-6 ml-2' />
           </Button>
         </div>
       </div>
