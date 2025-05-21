@@ -20,7 +20,7 @@ export function parseBooleanValue(value: string | null): boolean {
 }
 
 export function validateRequiredFields(data: Partial<PropertyFeatures> & NumericFields & BooleanFields) {
-  const requiredFields = ['code', 'propertyType', 'purpose', 'neighborhood', 'location'];
+  const requiredFields = ['code', 'propertyType', 'purpose', 'neighborhood', 'location', 'state', 'cep', 'street', 'city', 'number'];
 
   for (const field of requiredFields) {
     if (!data[field as keyof typeof data]) {
@@ -45,4 +45,13 @@ export function validateNumericValues(data: NumericFields) {
       throw new PropertyValidationError(`${label} não pode ser negativo`);
     }
   }
+}
+
+export async function createFileFromUrl(url: string): Promise<File> {
+  return fetch(url)
+    .then(res => res.blob())
+    .then(blob => {
+      const filename = url.split('/').pop() || 'arquivo.jpg';
+      return new File([blob], filename, { type: blob.type });
+    });
 }

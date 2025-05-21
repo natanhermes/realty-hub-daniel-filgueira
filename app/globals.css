@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 body {
-  /* background: url('./assets/background.svg'); */
   background-color: #EDEDED;
 }
 

@@ -3,13 +3,9 @@ import { PropertyService } from "@/app/services/propertyService";
 
 export async function POST(request: NextRequest) {
   const body = await request.json()
-  const { filters } = body
+  const { filters, itemsPerPage } = body
 
-  console.log(filters)
-
-  const properties = await PropertyService.listPropertiesByFilters(filters)
-
-  console.log(properties)
+  const properties = await PropertyService.listPropertiesByFilters(filters, itemsPerPage)
 
   return NextResponse.json(properties)
 }

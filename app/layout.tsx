@@ -19,12 +19,6 @@ const bombalurina = localFont({
   weight: '100 400 500 600 700 800 900',
 });
 
-export const metadata: Metadata = {
-  title: 'Daniel Filgueira Imobiliária',
-  description:
-    'Encontre o imóvel dos seus sonhos com facilidade e segurança.',
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,10 +29,9 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${bombalurina.variable} ${montserrat.className} font-normal antialiased`}>
         <QueryProvider>
-
           {children}
         </QueryProvider>
-        <Toaster richColors position="top-right" duration={3000} closeButton />
+        <Toaster richColors position="top-right" duration={1000} closeButton />
       </body>
     </html>
   );

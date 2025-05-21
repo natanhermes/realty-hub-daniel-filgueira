@@ -9,9 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 model user {
@@ -26,7 +26,7 @@ model property {
   title                String
   code                 String          @unique
   propertyType         String // Casa, Apartamento, Comercial, Terreno
-  purpose              String // Venda, Aluguel, Temporada
+  purpose              String // Venda, Aluguel, Temporada. ["sale", "rent", "sale-rent", "daily"]
   salePrice            Float? // Preço de venda
   rentalPrice          Float? // Preço de aluguel
   dailyPrice           Float? // Preço de diária
@@ -42,7 +42,12 @@ model property {
   numberOfParkingSpots Int? // Número de vagas de estacionamento
   constructionYear     Int? // Ano de construção
   floor                Int? // Número do andar
-  neighborhood         String? // Bairro
+  street               String
+  number               String
+  city                 String
+  state                String
+  cep                  String
+  neighborhood         String // Bairro
   location             String? // URL da localização
   description          String? // Descrição da propriedade
   active               Boolean? // Propriedade está ativa
@@ -55,7 +60,8 @@ model property {
 
 model image {
   id         String   @id @default(uuid())
-  url        String
+  url        String   @unique
+  highlight  Boolean  @default(false)
   type       String   @default("image")
   propertyId String
   property   property @relation(fields: [propertyId], references: [id], onDelete: Cascade)

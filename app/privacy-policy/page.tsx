@@ -1,9 +1,9 @@
-import { Header } from "@/components/header";
+import { Navbar } from "@/components/navbar";
 
 export default function PrivacyPolicy() {
   return (
     <>
-      <Header />
+      <Navbar />
       <div className="container mx-auto px-4 py-8 max-w-4xl mt-24">
         <h1 className="text-3xl font-bold mb-6 text-carbonBlack">Política de Privacidade</h1>
         <p className="text-sm text-leadGray mb-6">Última atualização: 21/03/2025</p>

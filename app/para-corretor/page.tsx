@@ -1,14 +1,14 @@
 'use client'
-import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import wppIcon from '@/app/assets/wpp.svg'
 import { Footer } from "@/components/footer";
+import { Navbar } from "@/components/navbar";
 
 export default function ParaCorretor() {
   return (
     <>
-      <Header />
+      <Navbar />
       <div className="bg-leadGray w-full px-4 py-8 mt-24 pb-28">
 
         <div className=" container mx-auto  max-w-4xl flex flex-col items-center justify-center gap-8">

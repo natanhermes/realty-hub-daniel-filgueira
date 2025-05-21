@@ -62,8 +62,25 @@ export class PropertyService {
     return properties;
   }
 
-  static async listPropertiesByFilters(filters: PropertyFilters): Promise<PaginatedResponse> {
-    const itemsPerPage = 10;
+  static async listPropertiesByLocations(neighborhood: string) {
+    const properties = await db.property.findMany({
+      where: {
+        active: true,
+        neighborhood,
+      },
+      include: {
+        image: true,
+        infrastructure: true,
+      },
+      orderBy: {
+        updatedAt: 'desc'
+      }
+    });
+
+    return properties;
+  }
+
+  static async listPropertiesByFilters(filters: PropertyFilters, itemsPerPage: number = 10): Promise<PaginatedResponse> {
     const page = filters.page || 1;
     const skip = (page - 1) * itemsPerPage;
 
@@ -176,6 +193,9 @@ export class PropertyService {
       db.property.findMany({
         where: {
           ...where,
+          id: {
+            not: filters.currentPropertyId
+          },
           active: true
         },
         skip,
@@ -188,7 +208,7 @@ export class PropertyService {
           createdAt: 'desc'
         }
       }),
-      db.property.count({ where: { ...where, active: true } })
+      db.property.count({ where: { ...where, active: true, id: { not: filters.currentPropertyId } } })
     ]);
 
     return {
@@ -207,6 +227,7 @@ export class PropertyService {
         infrastructure: true,
       },
     }) as Property | null;
+
     return property;
   }
 
@@ -235,8 +256,6 @@ export class PropertyService {
           where: { code },
         })
 
-        console.log('property', property)
-
         if (!property) {
           throw new PropertyHttpError('Imóvel não encontrado', 404);
         }
@@ -264,6 +283,11 @@ export class PropertyService {
             constructionYear: parseNumericValue(rawData.constructionYear, parseInt),
             floor: parseNumericValue(rawData.floor, parseInt),
             neighborhood: rawData.neighborhood,
+            state: rawData.state,
+            street: rawData.street,
+            city: rawData.city,
+            cep: rawData.cep,
+            number: rawData.number,
             location: rawData.location,
             description: rawData.description,
           }
@@ -303,7 +327,12 @@ export class PropertyService {
           numberOfParkingSpots: parseNumericValue(rawData.numberOfParkingSpots, parseInt),
           constructionYear: parseNumericValue(rawData.constructionYear, parseInt),
           floor: parseNumericValue(rawData.floor, parseInt),
-          neighborhood: rawData.neighborhood,
+          neighborhood: rawData.neighborhood!,
+          state: rawData.state!,
+          cep: rawData.cep!,
+          city: rawData.city!,
+          number: rawData.number!,
+          street: rawData.street!,
           location: rawData.location,
           description: rawData.description,
           active: true

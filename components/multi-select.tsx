@@ -6,12 +6,10 @@ import {
   CheckIcon,
   XCircle,
   ChevronDown,
-  XIcon,
   WandSparkles,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -28,6 +26,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -138,7 +137,7 @@ export const MultiSelect = React.forwardRef<
       defaultValue = [],
       placeholder = "Selecione as características",
       animation = 0,
-      maxCount = 2,
+      maxCount = 1,
       modalPopover = false,
       asChild = false,
       className,
@@ -150,6 +149,12 @@ export const MultiSelect = React.forwardRef<
       value || defaultValue
     );
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+
+    const isLabtop = useMediaQuery("(min-width: 1280px)")
+    const isDesktop = useMediaQuery("(min-width: 1024px)")
+    const isTablet = useMediaQuery("(min-width: 768px)")
+
+    const handleMaxCount = isLabtop ? 7 : isDesktop ? 5 : isTablet ? 3 : maxCount
 
     React.useEffect(() => {
       if (value !== undefined) {
@@ -206,7 +211,7 @@ export const MultiSelect = React.forwardRef<
                 {selectedValues.length === 0 && (
                   <span className="text-muted-foreground">{placeholder}</span>
                 )}
-                {selectedValues.slice(0, maxCount).map((value) => {
+                {selectedValues.slice(0, handleMaxCount).map((value) => {
                   const option = options.find((o) => o.value === value);
                   const IconComponent = option?.icon;
                   return (
@@ -230,14 +235,14 @@ export const MultiSelect = React.forwardRef<
                     </Badge>
                   );
                 })}
-                {selectedValues.length > maxCount && (
+                {selectedValues.length > handleMaxCount && (
                   <Badge
                     className={cn(
                       "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
                       multiSelectVariants({ variant })
                     )}
                   >
-                    {`+ ${selectedValues.length - maxCount} outras`}
+                    {`+ ${selectedValues.length - handleMaxCount} outras`}
                   </Badge>
                 )}
               </div>

@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import Navbar from './navbar';
+import { NavbarAuth } from './navbar';
 import { auth } from '@/auth';
 
 export default async function DashboardLayout({
@@ -17,8 +17,8 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar userName={username} />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <NavbarAuth userName={username} />
+      <main className="max-w-7xl mx-auto p-4 sm:px-6 lg:px-8">
         {children}
       </main>
     </div>

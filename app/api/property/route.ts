@@ -1,4 +1,5 @@
 import { PropertyService } from "@/app/services/propertyService";
+import { del } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -43,6 +44,8 @@ export async function DELETE(request: NextRequest) {
         { status: response.statusCode || 500 }
       );
     }
+
+    await del(`https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/projects/${code}`)
 
     return NextResponse.json({ status: 200 });
   } catch (error) {

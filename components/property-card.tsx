@@ -1,80 +1,103 @@
-'use client'
-import { House, BedDouble, ShowerHead, Bath, Car } from "lucide-react";
+"use client"
 
-import { Card, CardContent } from "./ui/card";
+import Image from "next/image"
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { Bath, MapPin, House, BedDouble, ShowerHead, Car } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import type { Property } from "@/types/Property"
+import { cn } from "@/lib/utils"
 
-import Image from "next/image";
-import { Property } from "@/types/Property";
-import { CarouselMedia } from "./carousel-images";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+interface PropertyCardProps {
+  property: Property
+  featured?: boolean
+  navigationUrl: string
+}
 
-import wppSvg from "@/app/assets/wpp.svg";
-import { cn, formatPrice } from "@/lib/utils";
+export function PropertyCard({ property, featured = false, navigationUrl }: PropertyCardProps) {
+  const imageHighlight = property.image.find(img => img.highlight) || (!!property.image.length && property.image[0])
 
-const ICONS_SIZE = 14;
-
-export function PropertyCard({ property, isAdmin = false }: { property: Property, isAdmin?: boolean }) {
-  const router = useRouter()
+  const badgePropertyType: Record<Property['propertyType'], string> = {
+    'house': 'Casa',
+    'lot': 'Loteamento',
+    'apartment': 'Apartamento',
+    'commercial': 'Comercial'
+  }
 
   return (
-    <Card className={cn("max-w-[24rem] md:max-w-[20rem] lg:max-w-[20rem] w-full flex flex-col cursor-pointer hover:scale-105 hover:shadow-lg transition-all duration-300", {
-      "opacity-50": !property.active
-    })}>
-      <CarouselMedia
-        mediaItems={property.image.map(media => ({
-          id: media.id,
-          url: media.url,
-          type: media.url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image'
-        }))}
-        showVideoControls={false}
-        onNavigate={() => router.push(`${isAdmin ? `/dashboard/my-properties/${property.code}` : `/property/${property.code}`}`)}
-      />
-
-      <CardContent className="w-full relative py-4">
-        {!isAdmin && (
-          <Image
-            onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou interessado no imóvel "${property.title}". Código: ${property.code}.`, '_blank')}
-            src={wppSvg}
-            alt="Whatsapp"
-            width={40}
-            height={40}
-            className='absolute rounded-full -top-5 right-1 hover:scale-105 hover:shadow-lg transition-all duration-300'
-          />
-        )}
-        <Link href={`${isAdmin ? `/dashboard/my-properties/${property.code}` : `/property/${property.code}`}`}>
-          <div className="space-y-2 text-gray-600">
-            <span className="text-lg font-bold line-clamp-1 max-w-[20rem]">{property.title}</span>
-
-            <div className=' text-sm'>
-              {property.purpose === 'sale' && <h3><b>Venda: </b><br /> {formatPrice(property.salePrice || 0)}</h3>}
-              {property.purpose === 'rent' && <h3><b>Aluguel: </b><br /> {formatPrice(property.rentalPrice || 0)}</h3>}
-              {property.purpose === 'daily' && <h3><b>Diária: </b><br /> {formatPrice(property.dailyPrice || 0)}</h3>}
-              {property.purpose === 'sale-rent' && (
-                <div className="flex justify-between">
-                  <h3><b>Venda: </b>{formatPrice(property.salePrice || 0)}</h3>
-                  <h3><b>Aluguel: </b>{formatPrice(property.rentalPrice || 0)}</h3>
-                </div>
+    <Link href={`${navigationUrl}`}>
+      <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
+        <Card className={cn("overflow-hidden h-[520px] border-none shadow-lg", { "opacity-50": !property.active })}>
+          <div className="relative h-64 w-full overflow-hidden">
+            <Image
+              src={imageHighlight ? imageHighlight.url : "/placeholder.svg"}
+              alt={property.title}
+              fill
+              className="object-cover transition-transform duration-500 hover:scale-110"
+            />
+            {featured && <Badge className="absolute bg-lightGold top-4 left-4 text-whiteIce">Destaque</Badge>}
+            <Badge className="absolute top-4 right-4 text-whiteIce">{badgePropertyType[property.propertyType]}</Badge>
+          </div>
+          <CardContent className="p-6">
+            <h3 className="text-xl font-bold mb-2 line-clamp-1">{property.title}</h3>
+            <div className="flex items-center text-muted-foreground mb-4">
+              <MapPin className="h-4 w-4 mr-1" />
+              <span className="text-sm">{property.neighborhood}</span>
+            </div>
+            <div>
+              {typeof property.salePrice === 'number' && property.salePrice > 0 && (
+                <p className="text-xl font-bold text-primary">
+                  {property.salePrice.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}/venda
+                </p>
+              )}
+              {typeof property.rentalPrice === 'number' && property.rentalPrice > 0 && (
+                <p className="text-xl font-bold text-primary">
+                  {property.rentalPrice.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}/aluguel
+                </p>
+              )}
+              {typeof property.dailyPrice === 'number' && property.dailyPrice > 0 && (
+                <p className="text-xl font-bold text-primary">
+                  {property.dailyPrice.toLocaleString('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}/diária
+                </p>
               )}
             </div>
+          </CardContent>
+          <CardFooter className="px-6 py-4 border-t flex gap-4 flex-wrap">
 
-            <div className='flex flex-col gap-1'>
-              <span className='text-xs'><b>Bairro:</b> {property.neighborhood}</span>
-              <span className='text-xs'><b>Código:</b> {property.code}</span>
+            <div className='flex items-center gap-1 text-leadGray text-xs'>
+              <House size={16} className='text-darkBlue' />
+              <span className="text-sm">{property.totalArea} m²</span>
+            </div>
+            <div className='flex items-center gap-1 text-leadGray text-xs'>
+              <BedDouble size={16} className='text-darkBlue' />
+              <span className="text-sm">{property.numberOfBedrooms} {property.numberOfBedrooms === 1 ? 'quarto' : 'quartos'}</span>
+            </div>
+            <div className='flex items-center gap-1 text-leadGray text-xs'>
+              <ShowerHead size={16} className='text-darkBlue' />
+              <span className="text-sm">{property.numberOfBathrooms} {property.numberOfBathrooms === 1 ? 'banheiro' : 'banheiros'}</span>
+            </div>
+            <div className='flex items-center gap-1 text-leadGray text-xs'>
+              <Bath size={16} className='text-darkBlue' />
+              <span className="text-sm">{property.numberOfSuites} {property.numberOfSuites === 1 ? 'suíte' : 'suítes'}</span>
+            </div>
+            <div className='flex items-center gap-1 text-leadGray text-xs'>
+              <Car size={16} className='text-darkBlue' />
+              <span className="text-sm">{property.numberOfParkingSpots} {property.numberOfParkingSpots === 1 ? 'vaga' : 'vagas'}</span>
             </div>
 
-            <p className='text-sm line-clamp-1 max-w-[20rem]'>{property.description}</p>
-
-            <div className='flex flex-wrap gap-1 w-full '>
-              <span className='flex items-center gap-1 text-gray-600 text-xs'><House size={ICONS_SIZE} className='text-black' />{property.totalArea} m²</span>
-              <span className='flex items-center gap-1 text-gray-600 text-xs'><BedDouble size={ICONS_SIZE} className='text-black' />{property.numberOfBedrooms} {property.numberOfBedrooms === 1 ? 'quarto' : 'quartos'}</span>
-              <span className='flex items-center gap-1 text-gray-600 text-xs'><ShowerHead size={ICONS_SIZE} className='text-black' /> {property.numberOfBathrooms} {property.numberOfBathrooms === 1 ? 'banheiro' : 'banheiros'}</span>
-              <span className='flex items-center gap-1 text-gray-600 text-xs'><Bath size={ICONS_SIZE} className='text-black' /> {property.numberOfSuites} {property.numberOfSuites === 1 ? 'suíte' : 'suítes'}</span>
-              <span className='flex items-center gap-1 text-gray-600 text-xs'><Car size={ICONS_SIZE} className='text-black' /> {property.numberOfParkingSpots} {property.numberOfParkingSpots === 1 ? 'vaga' : 'vagas'}</span>
-            </div>
-          </div>
-        </Link>
-      </CardContent>
-    </Card>
-  );
+          </CardFooter>
+        </Card>
+      </motion.div>
+    </Link>
+  )
 }
