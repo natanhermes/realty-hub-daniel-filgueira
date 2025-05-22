@@ -99,7 +99,7 @@ export default function PropertyDetailPage() {
     };
 
     fetchCoords();
-  }, [property]);
+  }, [property, address]);
 
   if (error) {
     toast.error(error.name, {

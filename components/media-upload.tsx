@@ -59,7 +59,7 @@ export default function MediaUpload({
 
       return true
     },
-    [acceptedTypes, maxSize, toast],
+    [acceptedTypes, maxSize],
   )
 
   const addFiles = useCallback(
@@ -105,7 +105,7 @@ export default function MediaUpload({
         })
       }
     },
-    [files, setFiles, maxFiles, isValidFile, toast],
+    [files, setFiles, maxFiles, isValidFile],
   )
 
   const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {

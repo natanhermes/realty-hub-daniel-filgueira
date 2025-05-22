@@ -137,3 +137,5 @@ export const AboutAgency = forwardRef<HTMLDivElement>((_, ref) => {
     )
   }
 })
+
+AboutAgency.displayName = "AboutAgency"

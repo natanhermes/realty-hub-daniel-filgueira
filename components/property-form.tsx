@@ -510,7 +510,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
         debouncedFetch(onlyNumbersCep);
       }
     }
-  }, [cep]);
+  }, [cep, debouncedFetch]);
 
   useEffect(() => {
     (async () => {

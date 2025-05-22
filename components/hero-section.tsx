@@ -56,7 +56,7 @@ export function HeroSection({ slides, title, subtitle, showButton, isHomepage }:
       setCurrentSlide((prev) => (prev + 1) % slides.length)
     }, 5000)
     return () => clearInterval(interval)
-  }, [])
+  }, [slides.length])
 
   return (
     <section className="w-full" id="imoveis-destaque" >

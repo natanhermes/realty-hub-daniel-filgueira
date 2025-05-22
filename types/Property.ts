@@ -2,7 +2,7 @@ import { image, infrastructure, property } from "@prisma/client";
 
 export type Property = property & {
   image: image[]
-  infrastructure: infrastructure & { [key: string]: boolean } | null
+  infrastructure: infrastructure & { [key: string]: boolean | string } | null
 }
 
 export type PropertyFilters = {

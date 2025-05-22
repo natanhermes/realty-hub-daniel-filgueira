@@ -52,7 +52,7 @@ export function SimilarProperties({ currentPropertyId, propertyType }: SimilarPr
     }
 
     fetchData()
-  }, [propertyType])
+  }, [propertyType, fetchProperties, currentPropertyId])
 
   if (similarProperties.length === 0) {
     return null

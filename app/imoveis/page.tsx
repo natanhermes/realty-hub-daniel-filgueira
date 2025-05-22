@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Filter } from "lucide-react"
 import { PropertyGrid } from "@/components/property-grid"
 import { FilterSidebar } from "@/components/filter-sidebar"
@@ -15,26 +15,10 @@ import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 const slides = [
-  {
-    id: 1,
-    image: "/assets/arena-das-dunas.jpg?height=1080&width=1920",
-    alt: "Estádio Arena das Dunas - Natal/RN",
-  },
-  {
-    id: 2,
-    image: "/assets/morro-do-careca.png?height=1080&width=1920",
-    alt: "Morro do careca - Praia de Ponta Negra",
-  },
-  {
-    id: 3,
-    image: "/assets/praia-da-pipa.jpg?height=1080&width=1920",
-    alt: "Falésias da praia de pipa",
-  },
-  {
-    id: 4,
-    image: "/assets/sao-miguel.png?height=1080&width=1920",
-    alt: "Falésias da praia de pipa",
-  },
+  { id: 1, image: "/assets/arena-das-dunas.jpg?height=1080&width=1920", alt: "Estádio Arena das Dunas - Natal/RN" },
+  { id: 2, image: "/assets/morro-do-careca.png?height=1080&width=1920", alt: "Morro do careca - Praia de Ponta Negra" },
+  { id: 3, image: "/assets/praia-da-pipa.jpg?height=1080&width=1920", alt: "Falésias da praia de pipa" },
+  { id: 4, image: "/assets/sao-miguel.png?height=1080&width=1920", alt: "Falésias da praia de pipa" },
 ]
 
 interface PaginationParams {
@@ -45,10 +29,8 @@ interface PaginationParams {
 export default function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([])
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const [pagination, setPagination] = useState<PaginationParams>({
-    page: 1,
-    limit: 10
-  })
+  const [pagination, setPagination] = useState<PaginationParams>({ page: 1, limit: 10 })
+
   const form = useForm<PropertyFilters>({
     defaultValues: {
       query: '',
@@ -63,51 +45,50 @@ export default function PropertiesPage() {
     }
   })
 
-  const filters = useWatch({
-    control: form.control
-  })
+  const filters = useWatch({ control: form.control })
 
   const { mutateAsync: fetchProperties, isPending: isFetchingProperties } = useMutation({
     mutationFn: async ({ filters, pagination }: { filters: PropertyFilters, pagination: PaginationParams }) => {
-      const fetchPropertiesPromise = (async () => {
+      const fetchPromise = (async () => {
         const response = await fetch('/api/properties', {
           method: 'POST',
           body: JSON.stringify({ filters, pagination })
-        });
+        })
 
-        const data = await response.json();
+        const data = await response.json()
 
         if (!response.ok) {
-          throw new Error(data.statusText || 'Erro ao criar imóvel');
+          throw new Error(data.statusText || 'Erro ao buscar imóveis')
         }
 
-        return data;
-      })();
+        return data
+      })()
 
-      toast.promise(fetchPropertiesPromise, {
+      toast.promise(fetchPromise, {
         loading: 'Buscando imóveis...',
-        error: e => e
+        error: (e) => e.message
       })
 
-      const responseData = await fetchPropertiesPromise
+      const result = await fetchPromise
 
-      setProperties(responseData.items)
+      setProperties(result.items)
     }
-  });
-
-  const debouncedFetch = useCallback(
-    debounce((filters: PropertyFilters, pagination: PaginationParams) => {
-      fetchProperties({ filters, pagination })
-    }, 500),
-    [fetchProperties]
-  )
+  })
 
   useEffect(() => {
-    debouncedFetch(filters, pagination)
+    const debounced = debounce(
+      (filters: PropertyFilters, pagination: PaginationParams) => {
+        fetchProperties({ filters, pagination })
+      },
+      500
+    )
+
+    debounced(filters, pagination)
+
     return () => {
-      debouncedFetch.cancel()
+      debounced.cancel()
     }
-  }, [filters, pagination, debouncedFetch])
+  }, [filters, pagination, fetchProperties])
 
   const handlePageChange = (newPage: number) => {
     setPagination(prev => ({ ...prev, page: newPage }))
@@ -118,7 +99,7 @@ export default function PropertiesPage() {
   }
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <Navbar />
       <main>
         <HeroSection
@@ -142,27 +123,21 @@ export default function PropertiesPage() {
           </div>
 
           <div className="flex">
-            <FilterSidebar
-              form={form}
-              isOpen={isFilterOpen}
-              onClose={toggleFilter}
-            />
+            <FilterSidebar form={form} isOpen={isFilterOpen} onClose={toggleFilter} />
 
             {isFetchingProperties ? (
               <div className="h-[40vh] w-full flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
               </div>
             ) : (
-              <>
-                <div className="w-full">
-                  <PropertyGrid properties={properties} />
-                </div>
-              </>
+              <div className="w-full">
+                <PropertyGrid properties={properties} />
+              </div>
             )}
           </div>
-        </div >
-      </main >
+        </div>
+      </main>
       <Footer />
-    </div >
+    </div>
   )
 }

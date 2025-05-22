@@ -220,3 +220,5 @@ export const AboutAgent = forwardRef<HTMLDivElement>((_, ref) => {
     )
   }
 })
+
+AboutAgent.displayName = "AboutAgent"

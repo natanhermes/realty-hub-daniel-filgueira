@@ -102,3 +102,5 @@ export const PropertiesByLocation = forwardRef<HTMLDivElement>((_, ref) => {
     </section>
   )
 })
+
+PropertiesByLocation.displayName = "PropertiesByLocation"
