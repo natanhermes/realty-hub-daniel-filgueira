@@ -56,11 +56,21 @@ export const PropertiesByLocation = forwardRef<HTMLDivElement>((_, ref) => {
             animate="show"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {propertiesByLocation?.map((property) => {
-              return (
-                <PropertyCard key={property.code} property={property} navigationUrl={`/imoveis/${property.code}`} />
-              )
-            })}
+
+            {propertiesByLocation?.length === 0 ? (
+              <div className="flex md:col-span-3 h-96 items-center justify-center">
+                <p className="text-darkBlue font-bold mx-auto">Não possuímos imóveis para está localidade.</p>
+              </div>
+            ) : (
+              <>
+                {propertiesByLocation?.map((property) => {
+                  return (
+                    <PropertyCard key={property.code} property={property} navigationUrl={`/imoveis/${property.code}`} />
+                  )
+                })}
+              </>
+            )}
+
           </motion.div>
         </TabsContent>
       ))

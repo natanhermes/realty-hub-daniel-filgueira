@@ -57,7 +57,7 @@ export const AboutAgency = forwardRef<HTMLDivElement>((_, ref) => {
             transition={{ duration: 0.5 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-lightGold">Sobre a Daniel Filgueira Imobiliária</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-lightGold">Sobre a Filgueira Imobiliária</h2>
             <p className="text-carbonBlack max-w-2xl mx-auto">
               Modernidade, Tecnologia e Elegância no Mercado Imobiliário
             </p>
@@ -104,10 +104,9 @@ export const AboutAgency = forwardRef<HTMLDivElement>((_, ref) => {
             >
               <Image
                 src={'/assets/daniel-principal.jpg'}
-                alt={'Daniel Filgueira Imobiliária - CRECI 8421-F'}
+                alt={'Filgueira Imobiliária - CRECI 8421-F'}
                 fill
                 className="object-contain rounded-lg"
-                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50  to-transparent"></div>
             </motion.div>

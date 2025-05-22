@@ -76,7 +76,6 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
                   alt={`${title} - Item ${currentIndex + 1}`}
                   fill
                   className="object-cover"
-                  priority
                 />
               </div>
             )}
@@ -233,7 +232,6 @@ export function PropertyGallery({ media, title }: PropertyGalleryProps) {
                     fill
                     className="object-contain"
                     sizes="(max-width: 768px) 100vw, 80vw"
-                    priority
                   />
                 )}
 

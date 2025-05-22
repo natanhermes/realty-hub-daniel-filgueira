@@ -20,7 +20,7 @@ const bombalurina = localFont({
 });
 
 export const metadata = {
-  title: 'Daniel Filgueira Imobiliária',
+  title: 'Filgueira Imobiliária',
   description: 'Encontre o imóvel dos seus sonhos com facilidade e segurança.',
 };
 

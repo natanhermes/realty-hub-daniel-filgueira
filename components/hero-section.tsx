@@ -19,7 +19,7 @@ const features = [
   {
     icon: <Shield className="h-10 w-10 text-darkBlue" />,
     title: "Os melhores imóveis para você",
-    description: "Na Daniel Filgueira Imobiliária, oferecemos uma seleção criteriosa de apartamentos, casas, salas comerciais e terrenos. Nossa equipe está pronta para auxiliá-lo na escolha do imóvel ideal. Entre em contato e agende uma visita.",
+    description: "Na Filgueira Imobiliária, oferecemos uma seleção criteriosa de apartamentos, casas, salas comerciais e terrenos. Nossa equipe está pronta para auxiliá-lo na escolha do imóvel ideal. Entre em contato e agende uma visita.",
   },
   {
     icon: <Award className="h-10 w-10 text-darkBlue" />,
@@ -67,7 +67,7 @@ export function HeroSection({ slides, title, subtitle, showButton, isHomepage }:
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"
               }`}
           >
-            <Image src={slide.image || "/placeholder.svg"} alt={slide.alt} fill priority className="object-cover grayscale" />
+            <Image src={slide.image || "/placeholder.svg"} alt={slide.alt} fill className="object-cover grayscale" />
             <div className="absolute inset-0 bg-black/40" />
           </div>
         ))}

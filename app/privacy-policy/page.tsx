@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
 
         <div className="space-y-6">
           <p className="text-leadGray">
-            A Daniel Filgueira Imobiliária valoriza a privacidade e a segurança das informações de seus clientes e visitantes. Este documento tem como objetivo esclarecer como coletamos, usamos, armazenamos e protegemos seus dados ao acessar nosso site danielfilgueira.com.br e utilizar nossos serviços.
+            A Filgueira Imobiliária valoriza a privacidade e a segurança das informações de seus clientes e visitantes. Este documento tem como objetivo esclarecer como coletamos, usamos, armazenamos e protegemos seus dados ao acessar nosso site danielfilgueira.com.br e utilizar nossos serviços.
           </p>
 
           <section>
@@ -28,7 +28,7 @@ export default function PrivacyPolicy() {
             <p className="text-leadGray mb-2">As informações coletadas são utilizadas para:</p>
             <ul className="list-disc pl-6 text-leadGray space-y-2">
               <li>Fornecer atendimento personalizado e responder dúvidas ou solicitações;</li>
-              <li>Enviar informações sobre imóveis, serviços e novidades da Daniel Filgueira Imobiliária;</li>
+              <li>Enviar informações sobre imóveis, serviços e novidades da Filgueira Imobiliária;</li>
               <li>Melhorar a experiência de navegação e otimizar nossos serviços;</li>
               <li>Garantir a segurança do site e cumprir obrigações legais.</li>
             </ul>
@@ -85,7 +85,7 @@ export default function PrivacyPolicy() {
 
           <div className="mt-8 pt-4 border-t">
             <p className="text-leadGray">
-              Daniel Filgueira Imobiliária{' '}
+              Filgueira Imobiliária{' '}
               <a href="https://www.danielfilgueira.com.br" className="text-blue-600 hover:underline">
                 www.danielfilgueira.com.br
               </a>

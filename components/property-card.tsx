@@ -34,7 +34,6 @@ export function PropertyCard({ property, featured = false, navigationUrl }: Prop
               src={imageHighlight ? imageHighlight.url : "/placeholder.svg"}
               alt={property.title}
               fill
-              priority
               className="object-cover transition-transform duration-500 hover:scale-110"
             />
             {featured && <Badge className="absolute bg-lightGold top-4 left-4 text-whiteIce">Destaque</Badge>}
@@ -44,7 +43,7 @@ export function PropertyCard({ property, featured = false, navigationUrl }: Prop
             <h3 className="text-xl font-bold mb-2 line-clamp-1">{property.title}</h3>
             <div className="flex items-center text-muted-foreground mb-4">
               <MapPin className="h-4 w-4 mr-1" />
-              <span className="text-sm">{property.neighborhood}</span>
+              <span className="text-sm">{property.neighborhood || `${property.city}`}</span>
             </div>
             <div>
               {typeof property.salePrice === 'number' && property.salePrice > 0 && (

@@ -12,7 +12,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-8 pt-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div>
-            <h3 className="text-xl font-bold mb-6">Daniel Filgueira Imobiliária</h3>
+            <h3 className="text-xl font-bold mb-6">Filgueira Imobiliária</h3>
             <p className="text-gray-300 mb-6">
               Especialistas em imóveis de alto padrão, oferecendo as melhores oportunidades para você investir ou
               encontrar o lar dos seus sonhos.
@@ -99,7 +99,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-leadGray mt-12 my-6 pt-8 text-center text-gray-400">
-          <p>© {new Date().getFullYear()} Daniel Filgueira Imobiliária. Todos os direitos reservados.</p>
+          <p>© {new Date().getFullYear()} Filgueira Imobiliária. Todos os direitos reservados.</p>
         </div>
         <div className="flex items-center gap-2 border-t justify-center border-leadGray pt-6">
           <p className="text-gray-400 text-sm">Desenvolvido por</p>

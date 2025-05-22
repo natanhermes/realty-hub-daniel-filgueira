@@ -11,17 +11,17 @@ const brokerPhotos = [
   {
     id: 1,
     src: "/assets/daniel-1.jfif?height=800&width=600",
-    alt: "Daniel Filgueira Imobiliária",
+    alt: "Filgueira Imobiliária",
   },
   {
     id: 2,
     src: "/assets/daniel-2.jfif?height=800&width=600",
-    alt: "Daniel Filgueira Imobiliária",
+    alt: "Filgueira Imobiliária",
   },
   {
     id: 3,
     src: "/assets/daniel-3.jfif?height=800&width=600",
-    alt: "Daniel Filgueira Imobiliária",
+    alt: "Filgueira Imobiliária",
   },
 ]
 
@@ -100,7 +100,6 @@ export const AboutAgent = forwardRef<HTMLDivElement>((_, ref) => {
                       alt={brokerPhotos[currentPhotoIndex].alt}
                       fill
                       className="object-cover"
-                      priority
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                   </motion.div>
@@ -176,7 +175,7 @@ export const AboutAgent = forwardRef<HTMLDivElement>((_, ref) => {
                 <p className="text-lg text-carbonBlack mb-8">
                   Sua trajetória é marcada pela busca incessante por tecnologia de ponta e inteligência artificial, criando ferramentas
                   que não apenas otimizaram processos, mas também redefiniram a forma de interagir com o mercado imobiliário.
-                  Como líder à frente da Daniel Filgueira Imobiliária, Daniel oferece mais do que transações comerciais – ele proporciona
+                  Como líder à frente da Filgueira Imobiliária, Daniel oferece mais do que transações comerciais – ele proporciona
                   experiências personalizadas e diferenciadas, sempre com um alto nível de requinte e sofisticação.
                 </p>
                 <p className="text-lg text-carbonBlack mb-8">
@@ -185,7 +184,7 @@ export const AboutAgent = forwardRef<HTMLDivElement>((_, ref) => {
                   atendimento personalizado coloca Daniel Filgueira como um verdadeiro pioneiro no cenário imobiliário de Natal.
                 </p>
                 <p className="text-lg text-carbonBlack mb-8">
-                  Para quem busca mais do que apenas um imóvel, mas uma experiência única e bem-sucedida, a Daniel Filgueira Imobiliária é
+                  Para quem busca mais do que apenas um imóvel, mas uma experiência única e bem-sucedida, a Filgueira Imobiliária é
                   sinônimo de confiança, inovação e excelência.
                 </p>
 
