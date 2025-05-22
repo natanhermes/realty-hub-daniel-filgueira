@@ -10,17 +10,17 @@ import { useMobile } from "@/hooks/use-mobile"
 const brokerPhotos = [
   {
     id: 1,
-    src: "/assets/daniel-1.jfif?height=800&width=600",
+    src: "/assets/daniel-1.jfif",
     alt: "Filgueira Imobiliária",
   },
   {
     id: 2,
-    src: "/assets/daniel-2.jfif?height=800&width=600",
+    src: "/assets/daniel-2.jfif",
     alt: "Filgueira Imobiliária",
   },
   {
     id: 3,
-    src: "/assets/daniel-3.jfif?height=800&width=600",
+    src: "/assets/daniel-3.jfif",
     alt: "Filgueira Imobiliária",
   },
 ]
