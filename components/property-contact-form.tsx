@@ -36,67 +36,47 @@ export function PropertyContactForm({ propertyTitle, propertyCode }: PropertyCon
     setFormState((prev) => ({ ...prev, contactPreference: value }))
   }
 
-  const sendWhatsAppMessage = async (phone: string, message: string) => {
-    const apiKey = 'E2CA34C1A4C7-4904-9938-796150471CD1'; // Pegue do Evolution Manager
-    const url = 'https://n8n-metha-evolution-api.8uvbdc.easypanel.host/message/sendText/Metha Potiguar'; // ou a URL do seu Evolution Server
-
+  const sendWhatsAppMessage = async () => {
     const currentUrl = window.location.href
 
-    const payload = {
-      number: '558431902410',
-      text: `Solicitação de contato para o imóvel: ${currentUrl}
-
-*Nome:* ${formState.name}
-*Email:* ${formState.email}
-*Telefone:* ${formState.phone}
-*Mensagem:* ${formState.message}
-    `
-    }
-
     try {
-      const response = await fetch(url, {
+      await fetch('/api/whatsapp/send-message', {
         method: 'POST',
-        headers: {
-          'apiKey': apiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          name: formState.name,
+          email: formState.email,
+          phone: formState.phone,
+          message: formState.message,
+          propertyLink: currentUrl,
+          contactPreference: formState.contactPreference
+        })
       })
-
-      if (!response.ok) {
-        const err = await response.text()
-        throw new Error(`Erro ao enviar: ${err}`)
-      }
-
-      const data = await response.json()
-      return data
     } catch (error) {
       console.error('Erro ao enviar mensagem para o WhatsApp:', error)
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    sendWhatsAppMessage(formState.phone, formState.message)
 
-    // Simulando envio do formulário
-    setTimeout(() => {
-      setIsSubmitting(false)
+    try {
+      await sendWhatsAppMessage()
       setIsSubmitted(true)
 
-      // Reset após 3 segundos
-      setTimeout(() => {
-        setIsSubmitted(false)
-        setFormState({
-          name: "",
-          email: "",
-          phone: "",
-          message: `Olá, tenho interesse no imóvel "${propertyTitle} - ${propertyCode}". Gostaria de mais informações.`,
-          contactPreference: "whatsapp",
-        })
-      }, 3000)
-    }, 1500)
+      setFormState({
+        name: "",
+        email: "",
+        phone: "",
+        message: `Olá, tenho interesse no imóvel "${propertyTitle} - ${propertyCode}". Gostaria de mais informações.`,
+        contactPreference: "whatsapp",
+      })
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error)
+    } finally {
+      setIsSubmitting(false)
+      setIsSubmitted(false)
+    }
   }
 
   return (
@@ -151,8 +131,13 @@ export function PropertyContactForm({ propertyTitle, propertyCode }: PropertyCon
               <Input
                 id="phone"
                 name="phone"
+                type="number"
                 value={formState.phone}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const cleanedValue = e.target.value.replace(/\D/g, '')
+                  e.target.value = cleanedValue
+                  return handleChange(e)
+                }}
                 placeholder="(00) 00000-0000"
                 required
               />

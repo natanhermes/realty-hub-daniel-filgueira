@@ -8,6 +8,7 @@ import { AboutAgency } from "@/components/about-agency"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { useEffect, useRef } from "react"
+import { FloatingButton } from "@/components/floating-button"
 
 const slides = [
   {
@@ -53,6 +54,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      <FloatingButton onClick={() => window.open(`https://wa.me/558496703029?text=Olá! Estou vindo do site. Sou cliente e gostaria de mais informações.`, '_blank')} />
       <Navbar />
       <main>
         <HeroSection
