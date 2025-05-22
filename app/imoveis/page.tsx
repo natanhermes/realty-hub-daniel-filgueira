@@ -13,6 +13,7 @@ import type { Property, PropertyFilters } from "@/types/Property"
 import { debounce } from "lodash"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { useMobile } from "@/hooks/use-mobile"
 
 const slides = [
   { id: 1, image: "/assets/arena-das-dunas.jpg?height=1080&width=1920", alt: "Estádio Arena das Dunas - Natal/RN" },
@@ -30,6 +31,8 @@ export default function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([])
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [pagination, setPagination] = useState<PaginationParams>({ page: 1, limit: 10 })
+
+  const isMobile = useMobile()
 
   const form = useForm<PropertyFilters>({
     defaultValues: {
@@ -115,10 +118,10 @@ export default function PropertiesPage() {
 
         <div className="container mx-auto px-4 py-8 relative">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-bold">Nossos Imóveis</h1>
-            <Button onClick={toggleFilter} variant="outline" className="flex items-center gap-2">
+            <h1 className="text-2xl md:text-4xl font-bold text-lightGold">Nossos Imóveis</h1>
+            <Button onClick={toggleFilter} variant="outline" className="text-darkBlue flex items-center gap-2">
               <Filter className="h-4 w-4" />
-              Filtros
+              {!isMobile && <span>Filtros</span>}
             </Button>
           </div>
 

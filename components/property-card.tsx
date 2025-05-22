@@ -39,7 +39,7 @@ export function PropertyCard({ property, featured = false, navigationUrl }: Prop
             {featured && <Badge className="absolute bg-lightGold top-4 left-4 text-whiteIce">Destaque</Badge>}
             <Badge className="absolute top-4 right-4 text-whiteIce">{badgePropertyType[property.propertyType]}</Badge>
           </div>
-          <CardContent className="p-6">
+          <CardContent className="p-2 py-4">
             <h3 className="text-xl font-bold mb-2 line-clamp-1">{property.title}</h3>
             <div className="flex items-center text-muted-foreground mb-4">
               <MapPin className="h-4 w-4 mr-1" />
@@ -72,7 +72,7 @@ export function PropertyCard({ property, featured = false, navigationUrl }: Prop
               )}
             </div>
           </CardContent>
-          <CardFooter className="px-6 py-4 border-t flex gap-4 flex-wrap">
+          <CardFooter className="py-4 border-t flex gap-4 flex-wrap">
 
             <div className='flex items-center gap-1 text-leadGray text-xs'>
               <House size={16} className='text-darkBlue' />

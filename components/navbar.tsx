@@ -42,16 +42,12 @@ export function Navbar() {
             <Button className="bg-darkBlue hover:bg-darkBlue/90 text-whiteIce">Contato</Button>
           </nav>
 
-          <button className={cn(
-            "xl:hidden",
-            isScrolled ? "text-whiteIce" : 'text-darkBlue'
-          )} onClick={() => setIsOpen(!isOpen)}>
+          <button className={cn("xl:hidden text-whiteIce")} onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
       {isOpen && (
         <div className="xl:hidden bg-whiteIce">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
