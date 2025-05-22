@@ -2,6 +2,12 @@ import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import { findUserByCredentials } from "./app/services/userService";
 
+declare module "next-auth" {
+    interface User {
+        username: string
+    }
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [
         Credentials({
@@ -17,14 +23,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }),
     ],
     callbacks: {
-        session: ({ session, token }) => {
-            return {
-                ...session,
-                user: {
-                    ...session.user,
-                    id: token.sub
-                }
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id
+                token.username = user.username
             }
-        }
+            return token
+        },
+        async session({ session, token }) {
+            if (session.user) {
+                session.user.id = token.id as string
+                session.user.username = token.username as string
+            }
+            return session
+        },
     }
 })
