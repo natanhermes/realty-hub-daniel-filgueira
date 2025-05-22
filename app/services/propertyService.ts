@@ -287,7 +287,7 @@ export class PropertyService {
             numberOfParkingSpots: parseNumericValue(rawData.numberOfParkingSpots, parseInt),
             constructionYear: parseNumericValue(rawData.constructionYear, parseInt),
             floor: parseNumericValue(rawData.floor, parseInt),
-            neighborhood: rawData.neighborhood,
+            neighborhood: rawData.neighborhood?.trimEnd(),
             state: rawData.state,
             street: rawData.street,
             city: rawData.city,
