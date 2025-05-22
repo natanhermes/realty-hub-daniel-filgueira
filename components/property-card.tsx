@@ -34,6 +34,7 @@ export function PropertyCard({ property, featured = false, navigationUrl }: Prop
               src={imageHighlight ? imageHighlight.url : "/placeholder.svg"}
               alt={property.title}
               fill
+              priority
               className="object-cover transition-transform duration-500 hover:scale-110"
             />
             {featured && <Badge className="absolute bg-lightGold top-4 left-4 text-whiteIce">Destaque</Badge>}

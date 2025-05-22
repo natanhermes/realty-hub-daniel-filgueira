@@ -153,6 +153,7 @@ export type PropertyFormData = z.infer<typeof propertySchema>;
 type ActiveTab = "basic" | "details" | "media" | "address"
 
 interface PropertyProps {
+  userId?: string
   property?: Property
   isEditing?: boolean
 }
@@ -215,6 +216,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
   const { mutateAsync: createProperty, isPending: isCreatingProperty } = useMutation({
     mutationFn: async ({ formData }: { formData: FormData }) => {
       const createPropertyPromise = (async () => {
+        formData.append('userId', userId!)
         const response = await fetch('/api/property', {
           method: 'POST',
           body: formData
@@ -539,7 +541,11 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
       className="bg-card rounded-xl shadow-lg p-2"
     >
       {property && (
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold w-full text-leadGray">Criado por: {property.createdBy.name}</span>
+
         <div className="w-full flex items-center justify-end p-2 gap-2">
+
           {property.active && (
             <Button className="space-x-2 bg-yellow-500 hover:bg-yellow-500/80 text-whiteIce" onClick={() => handleHighlightProperty(property.code)}>
               {property.highlight ? <StarOff size={16} /> : <Star size={16} />}
@@ -554,6 +560,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
             <Trash size={16} />
             {!isMobile && <span>Apagar</span>}
           </Button>
+          </div>
         </div>
       )}
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as ActiveTab)} className="w-full">

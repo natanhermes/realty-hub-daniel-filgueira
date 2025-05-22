@@ -37,6 +37,7 @@ export class PropertyService {
       include: {
         image: true,
         infrastructure: true,
+        createdBy: true,
       },
       orderBy: {
         updatedAt: 'desc'
@@ -54,6 +55,7 @@ export class PropertyService {
       include: {
         image: true,
         infrastructure: true,
+        createdBy: true,
       },
       orderBy: {
         updatedAt: 'desc'
@@ -71,6 +73,7 @@ export class PropertyService {
       include: {
         image: true,
         infrastructure: true,
+        createdBy: true,
       },
       orderBy: {
         updatedAt: 'desc'
@@ -203,6 +206,7 @@ export class PropertyService {
         include: {
           image: true,
           infrastructure: true,
+          createdBy: true,
         },
         orderBy: {
           createdAt: 'desc'
@@ -225,6 +229,7 @@ export class PropertyService {
       include: {
         image: true,
         infrastructure: true,
+        createdBy: true,
       },
     }) as Property | null;
 
@@ -305,7 +310,6 @@ export class PropertyService {
 
         return { success: true, data: property };
       }
-
       const property = await db.property.create({
         data: {
           code: rawData.code!,
@@ -334,7 +338,8 @@ export class PropertyService {
           number: rawData.number!,
           street: rawData.street!,
           location: rawData.location,
-          description: rawData.description,
+          description: rawData.description!,
+          userId: rawData.userId!,
           active: true
         }
       }).catch((error) => {

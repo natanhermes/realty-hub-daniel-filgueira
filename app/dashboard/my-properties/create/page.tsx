@@ -1,8 +1,11 @@
 import Link from "next/link"
 import { PropertyForm } from "@/components/property-form"
 import { ArrowLeft, Slash } from "lucide-react"
+import { auth } from "@/auth"
 
 export default async function AddPropertyPage() {
+
+  const session = await auth()
 
   return (
     <div className="container mx-auto px-4">
@@ -17,7 +20,7 @@ export default async function AddPropertyPage() {
         </div>
       </div>
 
-      <PropertyForm />
+      <PropertyForm userId={session?.user?.id} />
     </div>
   )
 }

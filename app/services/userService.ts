@@ -2,6 +2,7 @@ import db from "@/lib/db";
 import { compareSync } from "bcrypt-ts";
 
 type User = {
+    id: string;
     name: string;
     username: string;
     password?: string;
@@ -21,6 +22,7 @@ export async function findUserByCredentials(username: string, password: string):
     const passwordsMatch = compareSync(password, user.password);
 
     if (passwordsMatch) return {
+        id: user.id,
         name: user.name,
         username: user.username,
     };

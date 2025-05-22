@@ -1,8 +1,9 @@
-import { image, infrastructure, property } from "@prisma/client";
+import { image, infrastructure, property, type user } from "@prisma/client";
 
 export type Property = property & {
   image: image[]
   infrastructure: infrastructure & { [key: string]: boolean | string } | null
+  createdBy: user
 }
 
 export type PropertyFilters = {
