@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { toast } from "sonner"
 
 interface PropertyContactFormProps {
   propertyTitle: string
@@ -21,7 +22,7 @@ export function PropertyContactForm({ propertyTitle, propertyCode }: PropertyCon
     name: "",
     email: "",
     phone: "",
-    message: "",
+    message: `Olá, tenho interesse no imóvel "${propertyTitle} - ${propertyCode}". Gostaria de mais informações.`,
     contactPreference: "whatsapp",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -58,11 +59,13 @@ export function PropertyContactForm({ propertyTitle, propertyCode }: PropertyCon
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
 
     try {
-      await sendWhatsAppMessage()
-      setIsSubmitted(true)
+      setIsSubmitting(true)
+      toast.promise(sendWhatsAppMessage(), {
+        loading: "Enviando sua solicitação...",
+        success: "Sua solicitação foi enviada com sucesso. Retornaremos em breve."
+      })
 
       setFormState({
         name: "",
@@ -176,9 +179,7 @@ export function PropertyContactForm({ propertyTitle, propertyCode }: PropertyCon
             <Textarea
               id="message"
               name="message"
-              value={
-                formState.message || `Olá, tenho interesse no imóvel "${propertyTitle}". Gostaria de mais informações.`
-              }
+              value={formState.message}
               onChange={handleChange}
               placeholder="Sua mensagem"
               rows={4}
