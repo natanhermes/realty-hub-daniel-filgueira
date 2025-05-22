@@ -6,6 +6,6 @@ export async function GET(request: NextRequest) {
 
   const location = searchParams.get('location')
 
-  const properties = await PropertyService.listPropertiesByLocations(location)
+  const properties = await PropertyService.listPropertiesByLocations(location!)
   return NextResponse.json(properties)
 }
