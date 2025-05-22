@@ -57,7 +57,7 @@ export const AboutAgency = forwardRef<HTMLDivElement>((_, ref) => {
             transition={{ duration: 0.5 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-lightGold">Sobre a Filgueira Imobiliária</h2>
+            <h2 className="text-lg md:text-4xl font-bold mb-4 text-lightGold">Sobre a Filgueira Imobiliária</h2>
             <p className="text-carbonBlack max-w-2xl mx-auto">
               Modernidade, Tecnologia e Elegância no Mercado Imobiliário
             </p>
@@ -71,20 +71,20 @@ export const AboutAgency = forwardRef<HTMLDivElement>((_, ref) => {
               transition={{ duration: 0.6 }}
             >
               <h3 className="text-2xl font-bold mb-4 text-darkBlue">Nossa Missão</h3>
-              <p className="text-carbonBlack mb-6">
+              <p className="text-leadGray mb-6">
                 Proporcionar experiências excepcionais na aquisição e venda de imóveis de alto padrão, superando as
                 expectativas dos nossos clientes através de um atendimento personalizado e soluções imobiliárias
                 inovadoras.
               </p>
 
               <h3 className="text-2xl font-bold mb-4 text-darkBlue">Nossa Visão</h3>
-              <p className="text-carbonBlack mb-6">
+              <p className="text-leadGray mb-6">
                 Ser reconhecida como a imobiliária de referência no segmento de luxo, destacando-se pela excelência,
                 inovação e compromisso com a satisfação dos clientes.
               </p>
 
               <h3 className="text-2xl font-bold mb-4 text-darkBlue">Nossos Valores</h3>
-              <ul className="list-disc list-inside text-carbonBlack space-y-2">
+              <ul className="list-disc list-inside text-leadGray space-y-2">
                 <li>Excelência em todos os serviços prestados</li>
                 <li>Ética e transparência nas negociações</li>
                 <li>Compromisso com a satisfação do cliente</li>
@@ -121,11 +121,11 @@ export const AboutAgency = forwardRef<HTMLDivElement>((_, ref) => {
           >
             {features.map((feature, index) => (
               <motion.div key={index} variants={item}>
-                <Card className="h-full border-none shadow-md hover:shadow-lg transition-shadow">
+                <Card className="h-full border-none bg-whiteIce shadow-md hover:shadow-lg transition-shadow">
                   <CardContent className="p-6 flex flex-col items-center text-center">
-                    <div className="mb-4 p-3 rounded-full bg-gray-100">{feature.icon}</div>
-                    <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                    <p className="text-gray-600">{feature.description}</p>
+                    <div className="mb-4 p-3 rounded-full bg-gray-200">{feature.icon}</div>
+                    <h3 className="text-xl font-bold text-darkBlue mb-2">{feature.title}</h3>
+                    <p className="text-leadGray">{feature.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>

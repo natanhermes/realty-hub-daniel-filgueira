@@ -65,6 +65,19 @@ body {
   }
 }
 
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: #1C2C46 #e5e7eb;
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  height: 1px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #EDEDED; /* bg da track */
+}
+
 @layer base {
   * {
     @apply border-border;

@@ -37,7 +37,7 @@ export const FeaturedProperties = forwardRef<HTMLDivElement>((_, ref) => {
       <section ref={ref} id="property-highlight" className="py-20 bg-gray-50">
         <div className="container px-4 mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-lightGold">Imóveis em destaque</h2>
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-lightGold">Imóveis em destaque</h2>
             <p className="max-w-2xl mx-auto">
               Nenhum imóvel encontrado.
             </p>
@@ -57,10 +57,12 @@ export const FeaturedProperties = forwardRef<HTMLDivElement>((_, ref) => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-lightGold">Imóveis em destaque</h2>
+          <h2 className="text-2xl md:text-4xl font-bold mb-4 text-lightGold">Imóveis em destaque</h2>
           <p className=" max-w-2xl mx-auto">
-            Selecionamos os melhores imóveis de alto padrão para você. Conforto, sofisticação e exclusividade em cada
-            detalhe.
+            Selecionamos os melhores imóveis de alto padrão para você.
+          </p>
+          <p className=" max-w-2xl mx-auto">
+            Conforto, sofisticação e exclusividade em cada detalhe.
           </p>
         </motion.div>
 

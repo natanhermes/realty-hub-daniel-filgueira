@@ -46,7 +46,7 @@ export const PropertiesByLocation = forwardRef<HTMLDivElement>((_, ref) => {
     return (
       locations.map((location) => (
         <TabsContent key={location.id} value={location.id}>
-          <Link href="/imoveis" className="inline-flex justify-end pb-2 w-full text-gray-900 font-medium hover:underline">
+          <Link href="/imoveis" className="inline-flex justify-end pb-2 w-full text-leadGray font-medium hover:underline">
             Ver todos os imóveis <ArrowRight size={16} className="ml-1" />
           </Link>
           <motion.div
@@ -87,15 +87,15 @@ export const PropertiesByLocation = forwardRef<HTMLDivElement>((_, ref) => {
           transition={{ duration: 1 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-lightGold">Imóveis por Localidade</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-xl md:text-4xl font-bold mb-4 text-lightGold">Imóveis por Localidade</h2>
+          <p className="text-leadGray max-w-2xl mx-auto">
             Explore nossos imóveis de alto padrão nas melhores localidades do Brasil. Encontre o lugar perfeito para
             você.
           </p>
         </motion.div>
 
         <Tabs defaultValue="Lagoa Nova" onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
+          <TabsList className="scrollbar-custom flex gap-2 justify-start overflow-x-scroll md:overflow-hidden mb-6 px-2 md:grid md:grid-cols-4 md:gap-2">
             {locations.map((location) => (
               <TabsTrigger
                 key={location.id}
