@@ -28,7 +28,7 @@ export function PropertyCard({ property, featured = false, navigationUrl }: Prop
   return (
     <Link href={`${navigationUrl}`}>
       <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }}>
-        <Card className={cn("overflow-hidden h-[520px] border-none shadow-lg", { "opacity-50": !property.active })}>
+        <Card className={cn("overflow-hidden h-[540px] border-none shadow-lg", { "opacity-50": !property.active })}>
           <div className="relative h-64 w-full overflow-hidden">
             <Image
               src={imageHighlight ? imageHighlight.url : "/placeholder.svg"}

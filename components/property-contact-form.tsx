@@ -86,8 +86,8 @@ export function PropertyContactForm({ propertyTitle, propertyCode }: PropertyCon
       transition={{ delay: 0.3, duration: 0.5 }}
       className="bg-muted/30 rounded-xl p-4 sm:p-6"
     >
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Interessado neste imóvel?</h2>
-      <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
+      <h2 className="text-base sm:text-2xl font-bold mb-4 sm:mb-6">Interessado neste imóvel?</h2>
+      <p className="text-xs sm:text-base text-muted-foreground mb-4 sm:mb-6">
         Preencha o formulário abaixo e entraremos em contato o mais breve possível.
       </p>
 

@@ -139,7 +139,7 @@ export default function PropertyDetailPage() {
           className="bg-background rounded-xl shadow-xl p-4 sm:p-6 md:p-8 mb-8"
         >
           <div className="flex flex-wrap justify-between items-center mb-6">
-            <Link href="/imoveis" className="flex items-center text-muted-foreground hover:text-foreground">
+            <Link href="/imoveis" className="text-base md:text-xl flex items-center text-muted-foreground hover:text-foreground">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Voltar para listagem
             </Link>
@@ -167,17 +167,36 @@ export default function PropertyDetailPage() {
           </div>
 
           <div className="mb-6">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">{property.title}</h1>
+            <h1 className="text-xl sm:text-3xl md:text-4xl font-bold mb-2">{property.title}</h1>
             <div className="flex items-center text-muted-foreground mb-4">
               <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
-              <span className="text-sm sm:text-base">{property.neighborhood}</span>
+              <span className="text-sm sm:text-lg">{property.neighborhood || `${property.city}`}</span>
             </div>
-            <p className="text-2xl sm:text-3xl font-bold text-primary">
-              {property.salePrice?.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-              })}
-            </p>
+            {!!property.salePrice && (
+              <p className="text-2xl sm:text-3xl font-bold text-primary">
+                {property.salePrice?.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}/venda
+              </p>
+            )}
+            {!!property.rentalPrice && (
+              <p className="text-2xl sm:text-3xl font-bold text-primary">
+                {property.rentalPrice.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}/aluguel
+              </p>
+            )}
+            {!!property.dailyPrice && (
+              <p className="text-2xl sm:text-3xl font-bold text-primary">
+                {property.dailyPrice.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}/diária
+              </p>
+            )}
+
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 p-3 sm:p-4 bg-muted/30 rounded-lg mb-6 sm:mb-8">
@@ -204,7 +223,7 @@ export default function PropertyDetailPage() {
           </div>
 
           <div className="mb-6 sm:mb-8">
-            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Descrição</h2>
+            <h2 className="text-base sm:text-2xl font-bold mb-3 sm:mb-4">Descrição</h2>
             <div
               className="text-sm sm:text-base text-muted-foreground leading-relaxed"
               dangerouslySetInnerHTML={{ __html: safeDescription }}
@@ -212,7 +231,7 @@ export default function PropertyDetailPage() {
           </div>
 
           <div className="mb-6 sm:mb-8">
-            <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Características e diferenciais</h2>
+            <h2 className="text-base sm:text-2xl font-bold mb-3 sm:mb-4">Características e diferenciais</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
               {infrastructureLabels.map((value, index) => (
                 <motion.div
@@ -231,7 +250,7 @@ export default function PropertyDetailPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Informações Adicionais</h2>
+              <h2 className="text-base sm:text-2xl font-bold mb-3 sm:mb-4">Informações Adicionais</h2>
               <ul className="space-y-2 sm:space-y-3">
                 <li className="flex justify-between p-2 sm:p-3 bg-muted/30 rounded-lg">
                   <span className="text-sm sm:text-base text-muted-foreground">Tipo de Imóvel</span>
@@ -253,7 +272,7 @@ export default function PropertyDetailPage() {
             </div>
 
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Localização</h2>
+              <h2 className="text-base sm:text-2xl font-bold mb-3 sm:mb-4">Localização</h2>
               <div className="h-[200px] sm:h-[250px] bg-muted rounded-lg overflow-hidden">
                 <iframe
                   className="w-full h-full"
