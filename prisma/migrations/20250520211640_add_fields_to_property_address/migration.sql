@@ -9,8 +9,7 @@
 
 */
 -- AlterTable
-ALTER TABLE "property" ADD COLUMN     "city" TEXT NOT NULL,
-ADD COLUMN     "number" TEXT NOT NULL,
-ADD COLUMN     "state" TEXT NOT NULL,
-ADD COLUMN     "street" TEXT NOT NULL,
-ALTER COLUMN "neighborhood" SET NOT NULL;
+ALTER TABLE "property" ADD COLUMN     "city" TEXT,
+ADD COLUMN     "number" TEXT,
+ADD COLUMN     "state" TEXT,
+ADD COLUMN     "street" TEXT 

@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ALTER TABLE "property" ADD COLUMN     "cep" INTEGER NOT NULL;
+ALTER TABLE "property" ADD COLUMN     "cep" INTEGER;
