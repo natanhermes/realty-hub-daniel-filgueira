@@ -60,7 +60,7 @@ export function HeroSection({ slides, title, subtitle, showButton, isHomepage }:
 
   return (
     <section className="w-full" id="imoveis-destaque" >
-      <div className="relative h-[65vh] w-full overflow-hidden">
+      <div className="relative h-[75vh] md:h-[65vh] w-full overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
@@ -80,19 +80,18 @@ export function HeroSection({ slides, title, subtitle, showButton, isHomepage }:
               transition={{ duration: 0.8 }}
               className=" max-w-4xl"
             >
-              <div className="mb-6 text-4xl font-bold text-whiteIce md:text-5xl lg:text-6xl flex flex-col">
+              <div className="mb-6 text-xl font-bold text-whiteIce md:text-5xl lg:text-6xl flex flex-col">
                 {title}
               </div>
-              <p className="mb-8 text-xl text-white/90 md:text-2xl">{subtitle}</p>
+              <p className="mb-8 text-lg text-white/90 md:text-2xl">{subtitle}</p>
               {showButton && (
-                <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-                  <Link className="" href={`/imoveis`}>
-                    <div className="max-w-3xl flex gap-2 bg-darkBlue hover:bg-darkBlue/90 text-whiteIce items-center p-4 rounded-full">
-                      <p className='font-bold text-sm'>VER IMÓVEIS</p>
-                      <Search className="h-4 w-4 font-bold" />
-                    </div>
-                  </Link>
-                </div>
+                <Link
+                  href="/imoveis"
+                  className="inline-flex gap-2 bg-darkBlue hover:bg-darkBlue/90 text-whiteIce items-center p-4 rounded-full"
+                >
+                  <p className="font-bold text-sm">VER IMÓVEIS</p>
+                  <Search className="h-4 w-4 font-bold" />
+                </Link>
               )}
             </motion.div>
           </div>
@@ -110,7 +109,7 @@ export function HeroSection({ slides, title, subtitle, showButton, isHomepage }:
         </div>
       </div>
       {isHomepage && (
-        <div className="px-20 py-6">
+        <div className="px-4 md:px-20 py-6">
           <motion.div
             variants={container}
             initial="hidden"
@@ -120,11 +119,11 @@ export function HeroSection({ slides, title, subtitle, showButton, isHomepage }:
           >
             {features.map((feature, index) => (
               <motion.div key={index} variants={item}>
-                <Card className="h-full border-none shadow-md hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 flex flex-col items-center text-center">
-                    <div className="mb-4 p-3 rounded-full bg-gray-100">{feature.icon}</div>
-                    <h3 className="text-xl font-bold mb-2 text-darkBlue">{feature.title}</h3>
-                    <p className="text-leadGray">{feature.description}</p>
+                <Card className="h-full border-none bg-whiteIce shadow-md hover:shadow-lg transition-shadow">
+                  <CardContent className="md:px-6 flex flex-col items-center text-center">
+                    <div className="mb-4 p-3 rounded-full bg-gray-200">{feature.icon}</div>
+                    <h3 className="text-base md:text-lg font-bold mb-2 text-darkBlue">{feature.title}</h3>
+                    <p className="text-sm md:text-base text-leadGray italic">{feature.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>

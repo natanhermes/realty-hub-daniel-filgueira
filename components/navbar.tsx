@@ -31,10 +31,10 @@ export function Navbar() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href={'/'}>
-            <p className="text-whiteIce font-bombalurina text-7xl font-medium">Daniel Filgueira</p>
+            <p className="text-whiteIce font-bombalurina text-5xl md:text-7xl font-medium">Daniel Filgueira</p>
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden xl:flex items-center space-x-8">
             <NavLink href="/#property-highlight">Imóveis em Destaque</NavLink>
             <NavLink href="/#property-location">Localidades</NavLink>
             <NavLink href="/#about-agent">Sobre o Corretor</NavLink>
@@ -42,7 +42,10 @@ export function Navbar() {
             <Button className="bg-darkBlue hover:bg-darkBlue/90 text-whiteIce">Contato</Button>
           </nav>
 
-          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+          <button className={cn(
+            "xl:hidden",
+            isScrolled ? "text-whiteIce" : 'text-darkBlue'
+          )} onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
@@ -50,7 +53,7 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden bg-white">
+        <div className="xl:hidden bg-whiteIce">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
             <MobileNavLink href="/#imoveis-destaque" onClick={() => setIsOpen(false)}>
               Imóveis em Destaque
@@ -64,7 +67,7 @@ export function Navbar() {
             <MobileNavLink href="/#sobre-imobiliaria" onClick={() => setIsOpen(false)}>
               Sobre a Imobiliária
             </MobileNavLink>
-            <Button className="bg-gray-900 hover:bg-gray-800 text-white w-full">Contato</Button>
+            <Button className="bg-darkBlue hover:bg-darkBlue/90 text-white w-full">Contato</Button>
           </div>
         </div>
       )}
@@ -92,7 +95,7 @@ function MobileNavLink({
   return (
     <Link
       href={href}
-      className="text-whiteIce hover:text-leadGray font-medium py-2 transition-colors"
+      className="text-darkBlue hover:text-leadGray font-medium py-2 transition-colors"
       onClick={onClick}
     >
       {children}
