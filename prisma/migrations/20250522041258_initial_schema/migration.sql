@@ -30,12 +30,19 @@ CREATE TABLE "property" (
     "numberOfParkingSpots" INTEGER,
     "constructionYear" INTEGER,
     "floor" INTEGER,
+    "street" TEXT NOT NULL,
+    "number" TEXT,
+    "city" TEXT NOT NULL,
+    "state" TEXT NOT NULL,
+    "cep" TEXT NOT NULL,
     "neighborhood" TEXT,
     "location" TEXT,
-    "description" TEXT,
+    "description" TEXT NOT NULL,
     "active" BOOLEAN,
+    "highlight" BOOLEAN,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "property_pkey" PRIMARY KEY ("id")
 );
@@ -44,6 +51,8 @@ CREATE TABLE "property" (
 CREATE TABLE "image" (
     "id" TEXT NOT NULL,
     "url" TEXT NOT NULL,
+    "highlight" BOOLEAN NOT NULL DEFAULT false,
+    "type" TEXT NOT NULL DEFAULT 'image',
     "propertyId" TEXT NOT NULL,
 
     CONSTRAINT "image_pkey" PRIMARY KEY ("id")
@@ -79,7 +88,13 @@ CREATE UNIQUE INDEX "user_username_key" ON "user"("username");
 CREATE UNIQUE INDEX "property_code_key" ON "property"("code");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "image_url_key" ON "image"("url");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "infrastructure_propertyId_key" ON "infrastructure"("propertyId");
+
+-- AddForeignKey
+ALTER TABLE "property" ADD CONSTRAINT "property_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "image" ADD CONSTRAINT "image_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "property"("id") ON DELETE CASCADE ON UPDATE CASCADE;

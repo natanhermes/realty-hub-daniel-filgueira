@@ -9,16 +9,17 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model user {
-  id       String @id @default(uuid())
+  id       String     @id @default(uuid())
   name     String
-  username String @unique
+  username String     @unique
   password String
+  property property[]
 }
 
 model property {
@@ -42,20 +43,22 @@ model property {
   numberOfParkingSpots Int? // Número de vagas de estacionamento
   constructionYear     Int? // Ano de construção
   floor                Int? // Número do andar
-  street               String?
+  street               String
   number               String?
-  city                 String?
-  state                String?
-  cep                  String?
-  neighborhood         String // Bairro
+  city                 String
+  state                String
+  cep                  String
+  neighborhood         String? // Bairro
   location             String? // URL da localização
-  description          String? // Descrição da propriedade
+  description          String // Descrição da propriedade
   active               Boolean? // Propriedade está ativa
   highlight            Boolean? // Propriedade está em destaque
   infrastructure       infrastructure?
   image                image[]
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
+  createdBy            user            @relation(fields: [userId], references: [id])
+  userId               String
 }
 
 model image {
