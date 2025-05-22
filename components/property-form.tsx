@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -25,7 +25,6 @@ import { revalidatePropertiesAction } from "@/app/actions/revalidatePropertiesAc
 import { createFileFromUrl } from "@/lib/utils"
 import { useUploadMedia } from "@/hooks/use-upload-media"
 import { InputMask } from "./custom-input"
-import { debounce } from "lodash"
 
 const purposePriceLabels = {
   sale: {
@@ -87,25 +86,21 @@ export const propertySchema = z.object({
     invalid_type_error: "Selecione o tipo do imóvel",
     message: "Selecione o tipo do imóvel"
   }),
-  neighborhood: z.string({
-    required_error: "O bairro é obrigatório"
-  }).min(3, { message: 'Nome do bairro é obrigatório' }),
+  neighborhood: z.string().optional(),
   street: z.string({
     required_error: 'Nome da rua é obrigatório'
   }).min(8, { message: 'Nome da rua é obrigatório' }),
   city: z.string({
     required_error: 'Nome da cidade é obrigatório'
   }).min(3, { message: 'Nome da cidade é obrigatório' }),
-  number: z.string({
-    required_error: 'Número do imóvel é obrigatório'
-  }).min(2, { message: 'Número do imóvel é obrigatório' }),
+  number: z.string().optional(),
   cep: z.string({
     required_error: 'O CEP é obrigatório'
   }).min(8, { message: 'O CEP é obrigatório' }),
   state: z.string({
     required_error: 'O estado é obrigatório'
-  }).min(2),
-  location: z.string().url("Digite uma URL válida").optional(),
+  }).min(2, { message: 'O estado é obrigatório' }),
+  location: z.string().optional(),
   description: z.string({
     'required_error': 'A descrição é obrigatória.',
   }).min(10, "A descrição deve ter no mínimo 10 caracteres"),
@@ -158,7 +153,7 @@ interface PropertyProps {
   isEditing?: boolean
 }
 
-export function PropertyForm({ property, isEditing }: PropertyProps) {
+export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
   const [activeTab, setActiveTab] = useState<ActiveTab>("basic")
   const [mediaFiles, setMediaFiles] = useState<File[]>([])
 
@@ -269,7 +264,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
       const responseData = await updatePropertyPromise
 
       const filenames = new Set(
-        property?.image.map(img => img.url.split('/').pop())
+        property?.image.map(img => img.url?.split('/').pop())
       );
 
       const newFiles = mediaFiles.filter(arq => {
@@ -375,7 +370,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
 
       return propertyFormIsValid
     } else if (tab === 'address') {
-      const propertyFormIsValid = await propertyForm.trigger(["number", "cep", "street", "city", "neighborhood", "location"])
+      const propertyFormIsValid = await propertyForm.trigger(["cep", "city", "state"])
 
       return propertyFormIsValid
     }
@@ -479,40 +474,41 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
 
   const isLoading = isCreatingProperty || isUpdatingProperty || isDeletingProperty || isDeletingPropertyMedia || isUploading
 
-  const fetchAddress = async (cepValue: string) => {
-    try {
-      const res = await fetch(`https://viacep.com.br/ws/${cepValue}/json/`);
-      if (!res.ok) throw new Error("CEP inválido");
-      const data = await res.json();
-
-      propertyForm.setValue("street", data.logradouro || "");
-      propertyForm.setValue("neighborhood", data.bairro || "");
-      propertyForm.setValue("city", data.localidade || "");
-      propertyForm.setValue("state", data.uf || "");
-    } catch {
-      propertyForm.reset({
-        'street': '',
-        'cep': '',
-        'neighborhood': '',
-        'state': '',
-      });
-    }
-  };
-
   const cep = propertyForm.watch('cep')
 
-  const debouncedFetch = debounce((cepValue: string) => {
-    fetchAddress(cepValue);
-  }, 700);
+  const fetchCep = useCallback(async (cepValue: string) => {
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cepValue}/json/`);
+      const data = await res.json();
+
+      if (data.erro) throw new Error("CEP inválido");
+
+      const cepToFormMap = {
+        logradouro: "street",
+        bairro: "neighborhood",
+        localidade: "city",
+        uf: "state",
+      } as const;
+
+      Object.entries(cepToFormMap).forEach(([apiKey, formKey]) => {
+        if (data[apiKey]) {
+          propertyForm.setValue(formKey, data[apiKey]);
+        }
+      });
+
+    } catch {
+      toast.error("CEP inválido. Preencha os dados manualmente.");
+    }
+  }, [propertyForm]);
 
   useEffect(() => {
-    if (cep) {
-      const onlyNumbersCep = cep.replace(/\D/g, "");
-      if (onlyNumbersCep.length === 8) {
-        debouncedFetch(onlyNumbersCep);
-      }
-    }
-  }, [cep, debouncedFetch]);
+    const onlyNumbersCep = cep?.replace(/\D/g, "")
+
+    if (onlyNumbersCep.length !== 8) return
+
+    fetchCep(onlyNumbersCep)
+
+  }, [cep, fetchCep])
 
   useEffect(() => {
     (async () => {
@@ -520,7 +516,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
         try {
           const filesFromUrl = await Promise.all(
             property.image.map(item =>
-              createFileFromUrl(item.url)
+              createFileFromUrl(item.url || '')
             )
           )
           setMediaFiles(filesFromUrl)
@@ -530,8 +526,6 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
       }
     })();
   }, [property]);
-
-
 
   return (
     <motion.div
@@ -544,22 +538,22 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold w-full text-leadGray">Criado por: {property.createdBy.name}</span>
 
-        <div className="w-full flex items-center justify-end p-2 gap-2">
+          <div className="w-full flex items-center justify-end p-2 gap-2">
 
-          {property.active && (
-            <Button className="space-x-2 bg-yellow-500 hover:bg-yellow-500/80 text-whiteIce" onClick={() => handleHighlightProperty(property.code)}>
-              {property.highlight ? <StarOff size={16} /> : <Star size={16} />}
-              {!isMobile && <span>{property.highlight ? 'Remover destaque' : 'Destacar'}</span>}
+            {property.active && (
+              <Button className="space-x-2 bg-yellow-500 hover:bg-yellow-500/80 text-whiteIce" onClick={() => handleHighlightProperty(property.code)}>
+                {property.highlight ? <StarOff size={16} /> : <Star size={16} />}
+                {!isMobile && <span>{property.highlight ? 'Remover destaque' : 'Destacar'}</span>}
+              </Button>
+            )}
+            <Button variant="outline" className="space-x-2" onClick={() => handleInactiveProperty(property.code)}>
+              {property.active ? <EyeOff size={16} /> : <Eye size={16} />}
+              {!isMobile && <span>{property.active ? 'Ocultar' : 'Exibir'}</span>}
             </Button>
-          )}
-          <Button variant="outline" className="space-x-2" onClick={() => handleInactiveProperty(property.code)}>
-            {property.active ? <EyeOff size={16} /> : <Eye size={16} />}
-            {!isMobile && <span>{property.active ? 'Ocultar' : 'Exibir'}</span>}
-          </Button>
-          <Button variant="destructive" className="space-x-2" onClick={() => deleteProperty({ code: property.code })}>
-            <Trash size={16} />
-            {!isMobile && <span>Apagar</span>}
-          </Button>
+            <Button variant="destructive" className="space-x-2" onClick={() => deleteProperty({ code: property.code })}>
+              <Trash size={16} />
+              {!isMobile && <span>Apagar</span>}
+            </Button>
           </div>
         </div>
       )}
@@ -948,7 +942,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
                               <FormItem className="w-full">
                                 <FormLabel>Estado</FormLabel>
                                 <FormControl>
-                                  <Input {...field} disabled />
+                                  <Input {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -962,7 +956,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
                               <FormItem className="w-full">
                                 <FormLabel>Cidade</FormLabel>
                                 <FormControl>
-                                  <Input {...field} disabled />
+                                  <Input {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -977,7 +971,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
                               <FormItem className="w-full">
                                 <FormLabel>Logradouro/Rua</FormLabel>
                                 <FormControl>
-                                  <Input {...field} disabled />
+                                  <Input {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -993,7 +987,7 @@ export function PropertyForm({ property, isEditing }: PropertyProps) {
                                 <FormItem className="w-full">
                                   <FormLabel>Bairro</FormLabel>
                                   <FormControl>
-                                    <Input {...field} disabled />
+                                    <Input {...field} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>

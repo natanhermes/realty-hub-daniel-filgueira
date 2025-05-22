@@ -20,7 +20,7 @@ export function parseBooleanValue(value: string | null): boolean {
 }
 
 export function validateRequiredFields(data: Partial<PropertyFeatures> & NumericFields & BooleanFields) {
-  const requiredFields = ['code', 'propertyType', 'purpose', 'neighborhood', 'location', 'state', 'cep', 'street', 'city', 'number'];
+  const requiredFields = ['code', 'propertyType', 'purpose', 'state', 'cep', 'street', 'city'];
 
   for (const field of requiredFields) {
     if (!data[field as keyof typeof data]) {
