@@ -42,11 +42,11 @@ model property {
   numberOfParkingSpots Int? // Número de vagas de estacionamento
   constructionYear     Int? // Ano de construção
   floor                Int? // Número do andar
-  street               String
-  number               String
-  city                 String
-  state                String
-  cep                  String
+  street               String?
+  number               String?
+  city                 String?
+  state                String?
+  cep                  String?
   neighborhood         String // Bairro
   location             String? // URL da localização
   description          String? // Descrição da propriedade
