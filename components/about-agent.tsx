@@ -124,7 +124,7 @@ export const AboutAgent = forwardRef<HTMLDivElement>((_, ref) => {
                 </div>
               </div>
             </div>
-            <div className="lg:w-2/3">
+            <div className="lg:w-2/3 overflow-hidden">
 
               <motion.div
                 initial={{ opacity: 0, x: 70, }}
