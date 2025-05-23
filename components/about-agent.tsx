@@ -3,24 +3,24 @@
 import { useState, useEffect, forwardRef } from "react"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
-import { Phone, Mail, Instagram, ChevronLeft, ChevronRight } from "lucide-react"
+import { Phone, Mail, Instagram } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useMobile } from "@/hooks/use-mobile"
 
 const brokerPhotos = [
   {
     id: 1,
-    src: "/assets/daniel-1.jfif",
+    src: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/daniel-1-P5oQOZ0faqVvjrnVnuLaesZ9sUJBL1.JPG",
     alt: "Filgueira Imobiliária",
   },
   {
     id: 2,
-    src: "/assets/daniel-2.jfif",
+    src: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/daniel-2-CpsqO7mdLSvKdKIifJCmQILtQ190iy.JPG",
     alt: "Filgueira Imobiliária",
   },
   {
     id: 3,
-    src: "/assets/daniel-3.jfif",
+    src: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/daniel-3-rTxcef1ac2Z0OiT6OGL1J1H22kIkxj.JPG",
     alt: "Filgueira Imobiliária",
   },
 ]

@@ -13,17 +13,17 @@ import { FloatingButton } from "@/components/floating-button"
 const slides = [
   {
     id: 1,
-    image: "/assets/background.jpg",
+    image: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/background-d9tpoZUCEFFzGW8Yz4RPlSAnejuPmo.jpg",
     alt: "",
   },
   {
     id: 2,
-    image: "/assets/apartament-por-do-sol.jpg",
+    image: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/apartament-por-do-sol-jA0Cm4s02LiGtaRk31rQufEXycMw4f.jpg",
     alt: "",
   },
   {
     id: 3,
-    image: "/assets/apartamento-sala-escada.jpg",
+    image: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/apartamento-sala-escada-BqWqPpiqpZclpJpur7QF5tl7XW66nJ.jpg",
     alt: "",
   },
 ]

@@ -16,10 +16,10 @@ import { toast } from "sonner"
 import { useMobile } from "@/hooks/use-mobile"
 
 const slides = [
-  { id: 1, image: "/assets/arena-das-dunas.jpg?height=1080&width=1920", alt: "Estádio Arena das Dunas - Natal/RN" },
-  { id: 2, image: "/assets/morro-do-careca.png?height=1080&width=1920", alt: "Morro do careca - Praia de Ponta Negra" },
-  { id: 3, image: "/assets/praia-da-pipa.jpg?height=1080&width=1920", alt: "Falésias da praia de pipa" },
-  { id: 4, image: "/assets/sao-miguel.png?height=1080&width=1920", alt: "Falésias da praia de pipa" },
+  { id: 1, image: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/arena-das-dunas-s3do8q6Zw3cipXA9eCbl165qx4xez4.jpg", alt: "Estádio Arena das Dunas - Natal/RN" },
+  { id: 2, image: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/morro-do-careca-7ut2fv3VRStPJsC6fBFL2g48KOsnov.png", alt: "Morro do careca - Praia de Ponta Negra" },
+  { id: 3, image: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/praia-da-pipa-WLgnmNfsqcS9bIVHQ4CKo85k1zwAsM.jpg", alt: "Falésias da praia de pipa" },
+  { id: 4, image: "https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/sao-miguel-jfVBJ7bPZ4VcNnPo1vgTrbOkrbyVDV.png", alt: "Falésias da praia de pipa" },
 ]
 
 interface PaginationParams {

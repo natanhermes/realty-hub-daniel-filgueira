@@ -103,7 +103,7 @@ export const AboutAgency = forwardRef<HTMLDivElement>((_, ref) => {
               className="relative h-full w-full rounded-xl overflow-hidden shadow-xl z-10"
             >
               <Image
-                src={'/assets/daniel-principal.jpg'}
+                src={'https://ywqqqbg9btxv4mxt.public.blob.vercel-storage.com/static/daniel-principal-9S9o1rMlVHn5LJE4LEshhWgukznoVC.jpg'}
                 alt={'Filgueira Imobiliária - CRECI 8421-F'}
                 fill
                 className="object-contain rounded-lg"
