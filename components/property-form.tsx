@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { Save, Info, Captions, Paperclip, Trash, Eye, EyeOff, Star, StarOff } from "lucide-react"
+import { Save, Info, Captions, Paperclip, Trash, Eye, EyeOff, Star, StarOff, MapPinHouse } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -154,7 +154,7 @@ interface PropertyProps {
 }
 
 export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
-  const [activeTab, setActiveTab] = useState<ActiveTab>("basic")
+  const [activeTab, setActiveTab] = useState<ActiveTab>("address")
   const [mediaFiles, setMediaFiles] = useState<File[]>([])
 
   const { uploadMedia, isUploading } = useUploadMedia()
@@ -192,7 +192,7 @@ export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
       constructionYear: property?.constructionYear || 0,
       floor: property?.floor || 0,
       location: property?.location || '',
-      description: property?.description || '',
+      description: property?.description,
       propertyFeatures: property?.infrastructure ? Object.keys(property.infrastructure).filter(key =>
         key !== 'id' &&
         key !== 'propertyId' &&
@@ -535,11 +535,10 @@ export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
       className="bg-card rounded-xl shadow-lg p-2"
     >
       {property && (
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <span className="text-xs font-bold w-full text-leadGray">Criado por: {property.createdBy.name}</span>
 
           <div className="w-full flex items-center justify-end p-2 gap-2">
-
             {property.active && (
               <Button className="space-x-2 bg-yellow-500 hover:bg-yellow-500/80 text-whiteIce" onClick={() => handleHighlightProperty(property.code)}>
                 {property.highlight ? <StarOff size={16} /> : <Star size={16} />}
@@ -568,7 +567,7 @@ export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
             {!isMobile && <span>Detalhes</span>}
           </TabsTrigger>
           <TabsTrigger value="address" disabled={activeTab !== 'address'}>
-            <Paperclip size={16} />
+            <MapPinHouse size={16} />
             {!isMobile && <span>Endereço</span>}
           </TabsTrigger>
           <TabsTrigger value="media" disabled={activeTab !== 'media'}>
@@ -578,9 +577,9 @@ export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
         </TabsList>
 
         <Form {...propertyForm}>
-          <form onSubmit={propertyForm.handleSubmit(onSubmit)} className="lg:h-[630px] overflow-y-auto">
+          <form onSubmit={propertyForm.handleSubmit(onSubmit)} className="sm:h-[80vh] md:h-[70vh] lg:h-[630px] overflow-y-auto">
             {isLoading ? (
-              <div className="flex items-center justify-center h-full">
+              <div className="flex items-center justify-center h-[50vh] md:h-full">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
               </div>
             ) : (
@@ -709,7 +708,7 @@ export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
                         />
                       </div>
 
-                      <div className="flex justify-end mt-auto">
+                      <div className="flex justify-end mt-12 md:mt-auto">
                         <Button type="button" onClick={goToNextTab}>
                           Próximo
                         </Button>
@@ -909,7 +908,7 @@ export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
                         />
                       </div>
 
-                      <div className="flex justify-between mt-auto">
+                      <div className="flex justify-between mt-12 md:mt-auto">
                         <Button type="button" variant="outline" onClick={() => setActiveTab("basic")}>
                           Voltar
                         </Button>
@@ -925,7 +924,7 @@ export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
                   <Card className="h-full">
                     <CardContent className="pt-2 h-full flex flex-col">
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div className="md:col-span-4 flex flex-row gap-6">
+                        <div className="md:col-span-1">
                           <InputMask
                             control={propertyForm.control}
                             registerName="cep"
@@ -934,81 +933,76 @@ export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
                             placeholder="Ex.: 59000000"
                             type="text"
                           />
-
-                          <FormField
-                            control={propertyForm.control}
-                            name="state"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel>Estado</FormLabel>
-                                <FormControl>
-                                  <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={propertyForm.control}
-                            name="city"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel>Cidade</FormLabel>
-                                <FormControl>
-                                  <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
                         </div>
-                        <div className="md:col-span-4 flex flex-row gap-6">
-                          <FormField
-                            control={propertyForm.control}
-                            name="street"
-                            render={({ field }) => (
-                              <FormItem className="w-full">
-                                <FormLabel>Logradouro/Rua</FormLabel>
-                                <FormControl>
-                                  <Input {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                        <FormField
+                          control={propertyForm.control}
+                          name="state"
+                          render={({ field }) => (
+                            <FormItem className="md:col-span-1">
+                              <FormLabel>Estado</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                          <div className=" w-full flex gap-6">
+                        <FormField
+                          control={propertyForm.control}
+                          name="city"
+                          render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                              <FormLabel>Cidade</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={propertyForm.control}
+                          name="street"
+                          render={({ field }) => (
+                            <FormItem className="md:col-span-2">
+                              <FormLabel>Logradouro/Rua</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                            <FormField
-                              control={propertyForm.control}
-                              name="neighborhood"
-                              render={({ field }) => (
-                                <FormItem className="w-full">
-                                  <FormLabel>Bairro</FormLabel>
-                                  <FormControl>
-                                    <Input {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
 
-                            <FormField
-                              control={propertyForm.control}
-                              name="number"
-                              render={({ field }) => (
-                                <FormItem className="w-full">
-                                  <FormLabel>Número</FormLabel>
-                                  <FormControl>
-                                    <Input {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                        </div>
+                        <FormField
+                          control={propertyForm.control}
+                          name="neighborhood"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Bairro</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={propertyForm.control}
+                          name="number"
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Número</FormLabel>
+                              <FormControl>
+                                <Input {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                         <FormField
                           control={propertyForm.control}
                           name="location"
@@ -1024,7 +1018,7 @@ export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
                         />
                       </div>
 
-                      <div className="flex justify-between mt-auto">
+                      <div className="flex justify-between mt-12 md:mt-auto">
                         <Button type="button" variant="outline" onClick={() => setActiveTab("details")}>
                           Voltar
                         </Button>

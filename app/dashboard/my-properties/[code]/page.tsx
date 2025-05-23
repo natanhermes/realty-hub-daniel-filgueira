@@ -35,7 +35,7 @@ export default async function PropertyDetails({ params }: PropertyDetailsProps) 
         </Link>
         <Slash className=" size-4 text-darkBlue -rotate-[24deg]" />
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-darkBlue mb-2">Editar imóvel</h1>
+          <h1 className="text-lg lg:text-3xl md:text-4xl font-bold text-darkBlue mb-2">Editar imóvel</h1>
         </div>
       </div>
 

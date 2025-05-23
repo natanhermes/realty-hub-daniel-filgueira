@@ -30,7 +30,6 @@ interface RichTextEditorProps {
 export function RichTextEditor({ value, onChange, placeholder = "Escreva aqui..." }: RichTextEditorProps) {
   const [isMounted, setIsMounted] = useState(false)
 
-  // Inicializar o editor
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -244,12 +243,6 @@ export function RichTextEditor({ value, onChange, placeholder = "Escreva aqui...
         editor={editor}
         className="prose prose-sm max-w-none [&>ul]:list-disc [&>ul]:pl-6 [&>ol]:list-decimal [&>ol]:pl-6 [&>li]:my-2 [&>ul>li]:list-disc [&>ol>li]:list-decimal"
       />
-
-      {editor?.isEmpty && (
-        <div className="absolute top-[53px] left-3 text-muted-foreground text-sm pointer-events-none">
-          {placeholder}
-        </div>
-      )}
     </div>
   )
 }
