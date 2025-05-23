@@ -51,16 +51,16 @@ export function Navbar() {
       {isOpen && (
         <div className="xl:hidden bg-whiteIce">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-            <MobileNavLink href="/#imoveis-destaque" onClick={() => setIsOpen(false)}>
+            <MobileNavLink href="/#property-highlight" onClick={() => setIsOpen(false)}>
               Imóveis em Destaque
             </MobileNavLink>
-            <MobileNavLink href="/#localidades" onClick={() => setIsOpen(false)}>
+            <MobileNavLink href="/#property-location" onClick={() => setIsOpen(false)}>
               Localidades
             </MobileNavLink>
-            <MobileNavLink href="/#sobre-corretor" onClick={() => setIsOpen(false)}>
+            <MobileNavLink href="/#about-agent" onClick={() => setIsOpen(false)}>
               Sobre o Corretor
             </MobileNavLink>
-            <MobileNavLink href="/#sobre-imobiliaria" onClick={() => setIsOpen(false)}>
+            <MobileNavLink href="/#about-agency" onClick={() => setIsOpen(false)}>
               Sobre a Imobiliária
             </MobileNavLink>
             <Button className="bg-darkBlue hover:bg-darkBlue/90 text-white w-full">Contato</Button>
