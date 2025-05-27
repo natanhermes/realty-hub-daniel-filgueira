@@ -154,7 +154,7 @@ interface PropertyProps {
 }
 
 export function PropertyForm({ property, isEditing, userId }: PropertyProps) {
-  const [activeTab, setActiveTab] = useState<ActiveTab>("address")
+  const [activeTab, setActiveTab] = useState<ActiveTab>("basic")
   const [mediaFiles, setMediaFiles] = useState<File[]>([])
 
   const { uploadMedia, isUploading } = useUploadMedia()
